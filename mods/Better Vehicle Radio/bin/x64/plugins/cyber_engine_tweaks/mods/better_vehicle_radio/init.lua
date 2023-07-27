@@ -398,7 +398,7 @@ registerForEvent("onInit", function()
         end
     end
 
-    Game.GetCallbackSystem():RegisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("KeyInputEvent"))
+    Game.GetCallbackSystem():RegisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("KeyInputEvent"), true)
 
     ----------------------------------------------------------------------------------------------------
     -- VehicleComponent
@@ -493,12 +493,6 @@ registerForEvent("onInit", function()
     ---@param self PlayerPuppet
     ObserveBefore("PlayerPuppet", "OnGameAttached", function(self)
         radio.isMounting = false
-        Game.GetCallbackSystem():RegisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("KeyInputEvent"))
-    end)
-
-    ---@param self PlayerPuppet
-    ObserveBefore("PlayerPuppet", "OnDetach", function(self)
-        Game.GetCallbackSystem():UnregisterCallback("Input/Key", config.key_input_event:Target())
     end)
 
     ----------------------------------------------------------------------------------------------------
@@ -526,8 +520,4 @@ end)
 ---@param delta number
 registerForEvent("onUpdate", function(delta)
     Cron.Update(delta)
-end)
-
-registerForEvent("onShutdown", function()
-    Game.GetCallbackSystem():UnregisterCallback("Input/Key", config.key_input_event:Target())
 end)
