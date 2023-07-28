@@ -179,7 +179,7 @@ registerForEvent("onInit", function()
                         { config.track.column.key, config.track.column.value })
                 end
 
-                if config.track.filter_idx == 1 and config.track.current_station_state[station_idx] then
+                if config.track.filter_idx == 1 or config.track.current_station_state[station_idx] then
                     native_settings.removeSubcategory(config.track.path.station)
                     config.track.current_station_state[station_idx] = false
                 end
