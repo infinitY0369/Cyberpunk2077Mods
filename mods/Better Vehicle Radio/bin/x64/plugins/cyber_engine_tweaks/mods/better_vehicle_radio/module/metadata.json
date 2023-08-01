@@ -1,0 +1,846 @@
+{
+    "radioStations": [
+        {
+            "primaryKey": "699",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationAggroIndie",
+            "stationEventName": "radio_station_02_aggro_ind",
+            "tracks": [
+                {
+                    "primaryKey": "52832",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_dead_pilot",
+                    "trackEventName": "mus_radio_02_aggro_ind_dead_pilot"
+                },
+                {
+                    "primaryKey": "52830",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_kill_the_messenger",
+                    "trackEventName": "mus_radio_02_aggro_ind_kill_the_messenger"
+                },
+                {
+                    "primaryKey": "52831",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_makes_me_feel_better",
+                    "trackEventName": "mus_radio_02_aggro_ind_makes_me_feel_better"
+                },
+                {
+                    "primaryKey": "52837",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_never_stop_me",
+                    "trackEventName": "mus_radio_02_aggro_ind_never_stop_me"
+                },
+                {
+                    "primaryKey": "52835",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_reaktion",
+                    "trackEventName": "mus_radio_02_aggro_ind_reaktion"
+                },
+                {
+                    "primaryKey": "52829",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_resist_and_disorder",
+                    "trackEventName": "mus_radio_02_aggro_ind_resist_and_disorder"
+                },
+                {
+                    "primaryKey": "52836",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_with_her",
+                    "trackEventName": "mus_radio_02_aggro_ind_with_her"
+                },
+                {
+                    "primaryKey": "52834",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_black_terminal_vox_upgrade",
+                    "trackEventName": "mus_radio_02_aggro_ind_black_terminal_vox_upgrade"
+                },
+                {
+                    "primaryKey": "52833",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_come_close",
+                    "trackEventName": "mus_radio_02_aggro_ind_comeclose"
+                },
+                {
+                    "primaryKey": "52839",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_pain",
+                    "trackEventName": "mus_radio_02_aggro_ind_pain"
+                },
+                {
+                    "primaryKey": "52838",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_violence",
+                    "trackEventName": "mus_radio_02_aggro_ind_violence"
+                },
+                {
+                    "primaryKey": "52840",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_night_city_aliens",
+                    "trackEventName": "mus_radio_02_aggro_ind_night_city_aliens"
+                },
+                {
+                    "primaryKey": "52841",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_the_hunt",
+                    "trackEventName": "mus_radio_02_aggroind_cyber_caca"
+                },
+                {
+                    "primaryKey": "52842",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_cyber_tabla",
+                    "trackEventName": "mus_radio_02_aggro_ind_cyber_tabla"
+                },
+                {
+                    "primaryKey": "78159",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_ind_pig_dinner",
+                    "trackEventName": "mus_radio_02_aggro_ind_pig_dinner"
+                }
+            ]
+        },
+        {
+            "primaryKey": "700",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationElectroIndie",
+            "stationEventName": "radio_station_03_elec_ind",
+            "tracks": [
+                {
+                    "primaryKey": "52847",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_dirty_roses",
+                    "trackEventName": "mus_radio_03_elec_ind_dirty_roses"
+                },
+                {
+                    "primaryKey": "52848",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_worlds",
+                    "trackEventName": "mus_radio_03_elec_ind_worlds"
+                },
+                {
+                    "primaryKey": "52849",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_x",
+                    "trackEventName": "mus_radio_03_elec_ind_x"
+                },
+                {
+                    "primaryKey": "52857",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_flyinghead",
+                    "trackEventName": "mus_radio_03_elec_ind_flying_heads"
+                },
+                {
+                    "primaryKey": "52856",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_killkill",
+                    "trackEventName": "mus_radio_03_elec_ind_killkill"
+                },
+                {
+                    "primaryKey": "52850",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_maniak",
+                    "trackEventName": "mus_radio_03_elec_ind_maniak"
+                },
+                {
+                    "primaryKey": "52853",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_run",
+                    "trackEventName": "mus_radio_03_elec_ind_run"
+                },
+                {
+                    "primaryKey": "52854",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_glitched_revelation",
+                    "trackEventName": "mus_radio_03_elec_ind_ppgame05"
+                },
+                {
+                    "primaryKey": "52855",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_yellow_box",
+                    "trackEventName": "mus_radio_03_elec_ind_ppgame18"
+                },
+                {
+                    "primaryKey": "52851",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_be_machine",
+                    "trackEventName": "mus_radio_03_electind_be_machine"
+                },
+                {
+                    "primaryKey": "52858",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_volcano_the_sailor",
+                    "trackEventName": "mus_radio_03_electind_cyberpunk03_"
+                },
+                {
+                    "primaryKey": "52852",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_like_a_miracle",
+                    "trackEventName": "mus_radio_03_electind_cyberpunk07"
+                },
+                {
+                    "primaryKey": "52859",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-elec_ind_brain_damaged",
+                    "trackEventName": "mus_radio_03_elect_ind_brain_damaged"
+                }
+            ]
+        },
+        {
+            "primaryKey": "701",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationHipHop",
+            "stationEventName": "radio_station_04_hiphop",
+            "tracks": [
+                {
+                    "primaryKey": "52867",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_bigger_man",
+                    "trackEventName": "mus_radio_04_hiphop_bigger_man"
+                },
+                {
+                    "primaryKey": "52865",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_blouses_blue",
+                    "trackEventName": "mus_radio_04_hiphop_blouses_blue"
+                },
+                {
+                    "primaryKey": "52875",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_bruzez",
+                    "trackEventName": "mus_radio_04_hiphop_bruzez"
+                },
+                {
+                    "primaryKey": "53383",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-gangs_ccc",
+                    "trackEventName": "mus_radio_04_hiphop_ccc"
+                },
+                {
+                    "primaryKey": "52876",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_clip_boss",
+                    "trackEventName": "mus_radio_04_hiphop_clip_boss"
+                },
+                {
+                    "primaryKey": "52874",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_day_of_dead",
+                    "trackEventName": "mus_radio_04_hiphop_day_of_dead"
+                },
+                {
+                    "primaryKey": "52869",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_dishonor",
+                    "trackEventName": "mus_radio_04_hiphop_dishonor"
+                },
+                {
+                    "primaryKey": "52870",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_frost",
+                    "trackEventName": "mus_radio_04_hiphop_frost"
+                },
+                {
+                    "primaryKey": "52868",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_go blaze",
+                    "trackEventName": "mus_radio_04_hiphop_go_blaze"
+                },
+                {
+                    "primaryKey": "52878",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_hello_good_morning",
+                    "trackEventName": "mus_radio_04_hiphop_goodmorn"
+                },
+                {
+                    "primaryKey": "52880",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_gr4ves",
+                    "trackEventName": "mus_radio_04_hiphop_gr4ves"
+                },
+                {
+                    "primaryKey": "52871",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_high_school_bully",
+                    "trackEventName": "mus_radio_04_hiphop_hs_bully"
+                },
+                {
+                    "primaryKey": "52872",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_NBOM",
+                    "trackEventName": "mus_radio_04_hiphop_nbomdanalog"
+                },
+                {
+                    "primaryKey": "53382",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-gang_nose_bleed",
+                    "trackEventName": "mus_radio_04_hiphop_nose_bleed"
+                },
+                {
+                    "primaryKey": "52877",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_pluck_u",
+                    "trackEventName": "mus_radio_04_hiphop_plucku"
+                },
+                {
+                    "primaryKey": "52866",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_problem_kids",
+                    "trackEventName": "mus_radio_04_hiphop_problem_kids"
+                },
+                {
+                    "primaryKey": "52879",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_run_the_block",
+                    "trackEventName": "mus_radio_04_hiphop_run_the_block"
+                },
+                {
+                    "primaryKey": "52864",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_god_machines",
+                    "trackEventName": "mus_radio_04_hiphop_the_god_machines"
+                },
+                {
+                    "primaryKey": "52881",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_warningshots",
+                    "trackEventName": "mus_radio_04_hiphop_warning_shots"
+                },
+                {
+                    "primaryKey": "52873",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_suicide",
+                    "trackEventName": "mus_radio_04_hiphop_suicide"
+                },
+                {
+                    "primaryKey": "52882",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_metamorphosis",
+                    "trackEventName": "mus_radio_04_hiphop_yugen_blakrok"
+                },
+                {
+                    "primaryKey": "52883",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_no_save_point",
+                    "trackEventName": "mus_radio_04_hiphop_no_save_point"
+                },
+                {
+                    "primaryKey": "52884",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-hip_hop_flacko_loco",
+                    "trackEventName": "mus_radio_04_hiphop_ccc_flacko_loco"
+                }
+            ]
+        },
+        {
+            "primaryKey": "702",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationAggroTechno",
+            "stationEventName": "radio_station_07_aggro_techno",
+            "tracks": [
+                {
+                    "primaryKey": "52901",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_bios",
+                    "trackEventName": "mus_radio_07_aggro_techno_bios"
+                },
+                {
+                    "primaryKey": "52902",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_drained",
+                    "trackEventName": "mus_radio_07_aggro_techno_drained"
+                },
+                {
+                    "primaryKey": "52903",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_subvert",
+                    "trackEventName": "mus_radio_07_aggro_techno_subvert"
+                },
+                {
+                    "primaryKey": "52904",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_follow_the_white_crow",
+                    "trackEventName": "mus_radio_07_aggro_techno_follow_the_white_crow"
+                },
+                {
+                    "primaryKey": "52905",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_fake_spook",
+                    "trackEventName": "mus_radio_08_aggro_techno_fake_spook"
+                },
+                {
+                    "primaryKey": "52906",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_move_dat",
+                    "trackEventName": "mus_radio_08_aggro_techno_move_dat"
+                },
+                {
+                    "primaryKey": "52913",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_on_my_way_to_hell",
+                    "trackEventName": "mus_radio_08_aggro_techno_cyberpunk02"
+                },
+                {
+                    "primaryKey": "52908",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_break",
+                    "trackEventName": "mus_radio_07_aggro_techno_acid"
+                },
+                {
+                    "primaryKey": "52908",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_break",
+                    "trackEventName": "mus_radio_07_aggro_techno_jam"
+                },
+                {
+                    "primaryKey": "52909",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_across_the_floor",
+                    "trackEventName": "mus_radio_07_aggro_techno_really_heavy_groove"
+                },
+                {
+                    "primaryKey": "52910",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_gridflow",
+                    "trackEventName": "mus_radio_07_aggro_techno_stoczterdziescitrzy"
+                },
+                {
+                    "primaryKey": "52911",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_undertow_velocity",
+                    "trackEventName": "mus_radio_07_aggro_techno_zero_acid"
+                },
+                {
+                    "primaryKey": "52912",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_vascular",
+                    "trackEventName": "mus_radio_07_aggro_techno_cdpmetal_vascular"
+                },
+                {
+                    "primaryKey": "53932",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techo_dark_retro",
+                    "trackEventName": "mus_radio_07_aggro_techno_dark_retro"
+                },
+                {
+                    "primaryKey": "53932",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techo_dark_retro",
+                    "trackEventName": "mus_radio_07_aggro_techno_stack_overflow"
+                },
+                {
+                    "primaryKey": "53931",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-aggro_techno_cannibalismus",
+                    "trackEventName": "mus_radio_07_aggro_techno_cannibalismus"
+                }
+            ]
+        },
+        {
+            "primaryKey": "704",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationDownTempo",
+            "stationEventName": "radio_station_09_downtempo",
+            "tracks": [
+                {
+                    "primaryKey": "52800",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_isometric_air",
+                    "trackEventName": "mus_radio_09_downtempo_isometric_air"
+                },
+                {
+                    "primaryKey": "52802",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_practical_heart",
+                    "trackEventName": "mus_radio_09_downtempo_practical_heart"
+                },
+                {
+                    "primaryKey": "52801",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_real_window",
+                    "trackEventName": "mus_radio_09_downtempo_real_window"
+                },
+                {
+                    "primaryKey": "52804",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_simplepleasures",
+                    "trackEventName": "mus_radio_09_downtempo_simple_pleasures"
+                },
+                {
+                    "primaryKey": "52803",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_antagonistic",
+                    "trackEventName": "mus_radio_09_downtempo_antagonistic"
+                },
+                {
+                    "primaryKey": "52814",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_ice_maddox",
+                    "trackEventName": "mus_radio_09_downtempo_cdprojekt2_uferlos"
+                },
+                {
+                    "primaryKey": "52805",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_chodze",
+                    "trackEventName": "mus_radio_09_downtempo_chodze"
+                },
+                {
+                    "primaryKey": "52806",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_midnight_eye",
+                    "trackEventName": "mus_radio_09_downtempo_cyberpunk05"
+                },
+                {
+                    "primaryKey": "52807",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_blurred",
+                    "trackEventName": "mus_radio_09_downtempo_cyberpunk06"
+                },
+                {
+                    "primaryKey": "52808",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_the_other_room",
+                    "trackEventName": "mus_radio_09_downtempo_cyberpunk08"
+                },
+                {
+                    "primaryKey": "52810",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_retrogenesis",
+                    "trackEventName": "mus_radio_09_downtempo_dub_dub_mix_ambient"
+                },
+                {
+                    "primaryKey": "52815",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_lithium",
+                    "trackEventName": "mus_radio_09_downtempo_demo4"
+                },
+                {
+                    "primaryKey": "52816",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_slag",
+                    "trackEventName": "mus_radio_09_downtempo_demo7"
+                },
+                {
+                    "primaryKey": "52813",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_ashes_and_diamonds",
+                    "trackEventName": "mus_radio_09_downtempo_ashes_and_diamonds"
+                },
+                {
+                    "primaryKey": "52809",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_la_stessa_causa",
+                    "trackEventName": "mus_radio_09_downtempo_le_stessa_causa"
+                },
+                {
+                    "primaryKey": "52811",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_miami_suicide",
+                    "trackEventName": "mus_radio_09_downtempo_miami_suicide"
+                },
+                {
+                    "primaryKey": "52812",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-downtempo_slippery_stabs",
+                    "trackEventName": "mus_radio_09_downtempo_slippery_stabs"
+                }
+            ]
+        },
+        {
+            "primaryKey": "2122",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationAttRock",
+            "stationEventName": "radio_station_01_att_rock",
+            "tracks": [
+                {
+                    "primaryKey": "52818",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_heave_ho",
+                    "trackEventName": "mus_radio_01_att_rock_heaven_ho"
+                },
+                {
+                    "primaryKey": "52817",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_sufferme",
+                    "trackEventName": "mus_radio_01_att_rock_suffer_me"
+                },
+                {
+                    "primaryKey": "52821",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_likewise",
+                    "trackEventName": "mus_radio_01_attrock_likewise"
+                },
+                {
+                    "primaryKey": "52822",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_fnff",
+                    "trackEventName": "mus_radio_01_att_rock_friday_night_fire_night"
+                },
+                {
+                    "primaryKey": "52819",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_i_will_follow",
+                    "trackEventName": "mus_radio_01_att_rock_i_will_follow"
+                },
+                {
+                    "primaryKey": "52824",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_sustain_decay",
+                    "trackEventName": "mus_radio_01_att_rock_mstr01"
+                },
+                {
+                    "primaryKey": "52826",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_black_dog",
+                    "trackEventName": "mus_radio_01_att_rock_black_dog"
+                },
+                {
+                    "primaryKey": "52827",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_chippin_in",
+                    "trackEventName": "mus_radio_01_att_rock_chippin_in"
+                },
+                {
+                    "primaryKey": "52825",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_never_fade_away",
+                    "trackEventName": "mus_radio_01_att_rock_never_fade_away"
+                },
+                {
+                    "primaryKey": "52828",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_the_ballad",
+                    "trackEventName": "mus_radio_01_att_rock_the_ballad"
+                },
+                {
+                    "primaryKey": "52823",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_trauma",
+                    "trackEventName": "mus_radio_01_att_rock_trauma"
+                },
+                {
+                    "primaryKey": "53359",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_testmaster",
+                    "trackEventName": "mus_radio_01_att_rock_no_convenient_apocalypse"
+                },
+                {
+                    "primaryKey": "53358",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_summer_of_2069",
+                    "trackEventName": "mus_radio_01_attrock_summer_of_2069"
+                },
+                {
+                    "primaryKey": "53362",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_so_it_goes",
+                    "trackEventName": "mus_radio_01_attrock_so_it_goes"
+                },
+                {
+                    "primaryKey": "53361",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_to_the_fullest",
+                    "trackEventName": "mus_radio_01_attrock_to_the_fullest"
+                }
+            ]
+        },
+        {
+            "primaryKey": "2123",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationPop",
+            "stationEventName": "radio_station_05_pop",
+            "tracks": [
+                {
+                    "primaryKey": "52885",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_circus_minimus",
+                    "trackEventName": "mus_radio_05_pop_cirque_du_soleil"
+                },
+                {
+                    "primaryKey": "52890",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_history",
+                    "trackEventName": "mus_radio_05_pop_history"
+                },
+                {
+                    "primaryKey": "52888",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_your_house",
+                    "trackEventName": "mus_radio_05_pop_i_want_to_stay_at_your_house"
+                },
+                {
+                    "primaryKey": "52887",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_night_city",
+                    "trackEventName": "mus_radio_05_pop_night_city"
+                },
+                {
+                    "primaryKey": "52889",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_hole_in_sun",
+                    "trackEventName": "mus_radio_05_pop_hole_in_the_sun"
+                },
+                {
+                    "primaryKey": "52886",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_major_crimes",
+                    "trackEventName": "mus_radio_05_pop_major_crimes"
+                },
+                {
+                    "primaryKey": "52820",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_whos_ready_for_tomorrow",
+                    "trackEventName": "mus_radio_05_pop_whos_ready"
+                },
+                {
+                    "primaryKey": "52894",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_crustpunk",
+                    "trackEventName": "mus_radio_05_pop_crust_punk"
+                },
+                {
+                    "primaryKey": "52895",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_heres_a_thought",
+                    "trackEventName": "mus_radio_05_pop_heres_a_thought"
+                },
+                {
+                    "primaryKey": "52891",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_ponpon_shit",
+                    "trackEventName": "mus_radio_05_pop_ponpon_shit"
+                },
+                {
+                    "primaryKey": "53365",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_4aem",
+                    "trackEventName": "mus_radio_05_pop_4aem"
+                },
+                {
+                    "primaryKey": "53366",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_delicate_weapon",
+                    "trackEventName": "mus_radio_05_pop_delicate_weapon"
+                },
+                {
+                    "primaryKey": "78160",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_shygirl",
+                    "trackEventName": "mus_radio_05_pop_shygirl"
+                },
+                {
+                    "primaryKey": "52893",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_off_the_leash",
+                    "trackEventName": "mus_custom_radio_off_the_leash"
+                },
+                {
+                    "primaryKey": "52892",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_user_friendly",
+                    "trackEventName": "mus_custom_radio_user_friendly"
+                }
+            ]
+        },
+        {
+            "primaryKey": "2124",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationLatino",
+            "stationEventName": "radio_station_10_latino",
+            "tracks": [
+                {
+                    "primaryKey": "52918",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_barrio",
+                    "trackEventName": "mus_radio_10_latino_barrio"
+                },
+                {
+                    "primaryKey": "52921",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_muevelo_cumbia",
+                    "trackEventName": "mus_radio_10_latino_cumbia"
+                },
+                {
+                    "primaryKey": "52916",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_dinero",
+                    "trackEventName": "mus_radio_10_latino_dinero"
+                },
+                {
+                    "primaryKey": "52922",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_muerto_thrash",
+                    "trackEventName": "mus_radio_10_latino_muertothrash"
+                },
+                {
+                    "primaryKey": "52917",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_serpant",
+                    "trackEventName": "mus_radio_10_latino_serpant"
+                },
+                {
+                    "primaryKey": "52915",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_dagga",
+                    "trackEventName": "mus_radio_10_latino_daggafrica"
+                },
+                {
+                    "primaryKey": "52920",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_hood",
+                    "trackEventName": "mus_radio_10_latino_hood"
+                },
+                {
+                    "primaryKey": "52914",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_bamo",
+                    "trackEventName": "mus_radio_10_latino_bamo"
+                },
+                {
+                    "primaryKey": "52924",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_westcoast",
+                    "trackEventName": "mus_radio_10_latino_westcoast_till_i_die"
+                },
+                {
+                    "primaryKey": "52919",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_tatted",
+                    "trackEventName": "mus_radio_10_latino_tatted_on_my_face"
+                },
+                {
+                    "primaryKey": "52923",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-latino_only_son",
+                    "trackEventName": "mus_radio_10_latino_only_son"
+                }
+            ]
+        },
+        {
+            "primaryKey": "2125",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationMetal",
+            "stationEventName": "radio_station_11_metal",
+            "tracks": [
+                {
+                    "primaryKey": "52936",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_abandoned_land",
+                    "trackEventName": "mus_radio_11_metal_abandoned_land"
+                },
+                {
+                    "primaryKey": "52928",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_acid_breather",
+                    "trackEventName": "mus_radio_11_metal_acid_breather"
+                },
+                {
+                    "primaryKey": "52937",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_black_concrete",
+                    "trackEventName": "mus_radio_11_metal_black_concrete"
+                },
+                {
+                    "primaryKey": "52925",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_finis",
+                    "trackEventName": "mus_radio_11_metal_finis"
+                },
+                {
+                    "primaryKey": "52926",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_the_accursed",
+                    "trackEventName": "mus_radio_11_metal_theaccursed"
+                },
+                {
+                    "primaryKey": "52927",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_march_30",
+                    "trackEventName": "mus_radio_11_metal_march30"
+                },
+                {
+                    "primaryKey": "52931",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_scum",
+                    "trackEventName": "mus_radio_11_metal_scum"
+                },
+                {
+                    "primaryKey": "52933",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_kevin",
+                    "trackEventName": "mus_radio_11_metal_kevin"
+                },
+                {
+                    "primaryKey": "52932",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_fueled_by_poison",
+                    "trackEventName": "mus_radio_11_metal_fueled_by_poison"
+                },
+                {
+                    "primaryKey": "52929",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_witches",
+                    "trackEventName": "mus_radio_11_metal_2"
+                },
+                {
+                    "primaryKey": "52935",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_zurawie",
+                    "trackEventName": "mus_radio_11_metal_zurawie"
+                },
+                {
+                    "primaryKey": "52934",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_future_drugs",
+                    "trackEventName": "mus_radio_11_metal_future_drags"
+                },
+                {
+                    "primaryKey": "52930",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_the_loop",
+                    "trackEventName": "mus_radio_11_metal_the_loop"
+                },
+                {
+                    "primaryKey": "52938",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_i_wont_let_you_go",
+                    "trackEventName": "mus_radio_11_metal_i_wont_let_you_go"
+                }
+            ]
+        },
+        {
+            "primaryKey": "13224",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationMinimalTechno",
+            "stationEventName": "radio_station_06_minim_techno",
+            "tracks": [
+                {
+                    "primaryKey": "52897",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-min_tech_delirium_2",
+                    "trackEventName": "mus_radio_06_minim_tech_delirium2"
+                },
+                {
+                    "primaryKey": "52898",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-min_tech_harm_sweaty_pit",
+                    "trackEventName": "mus_radio_06_minim_tech_harm_sweaty_pit"
+                },
+                {
+                    "primaryKey": "52899",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-min_tech_lullaby",
+                    "trackEventName": "mus_radio_06_minim_tech_my_lullaby_for_you"
+                },
+                {
+                    "primaryKey": "52896",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-min_tech_piling_in_my_head",
+                    "trackEventName": "mus_radio_06_minim_tech_pilling_in_my_head"
+                },
+                {
+                    "primaryKey": "52900",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-min_tech_surprise_me",
+                    "trackEventName": "mus_radio_06_minim_tech_surprise_me"
+                }
+            ]
+        },
+        {
+            "primaryKey": "45325",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationJazz",
+            "stationEventName": "radio_station_08_jazz",
+            "tracks": [
+                {
+                    "primaryKey": "53369",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_ascenseur",
+                    "trackEventName": "mus_radio_08_jazz_generique"
+                },
+                {
+                    "primaryKey": "53372",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_solo_dancer",
+                    "trackEventName": "mus_radio_08_jazz_solo_dancer"
+                },
+                {
+                    "primaryKey": "53374",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_you_dont_know_what_love_is",
+                    "trackEventName": "mus_radio_08_jazz_you_dont_know_what_love_is"
+                },
+                {
+                    "primaryKey": "53367",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_black_satin",
+                    "trackEventName": "mus_radio_08_jazz_black_satin_what_if_agharta"
+                },
+                {
+                    "primaryKey": "53368",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_bitches_brew",
+                    "trackEventName": "mus_radio_08_jazz_bitches_brew"
+                },
+                {
+                    "primaryKey": "53371",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_impressions",
+                    "trackEventName": "mus_radio_08_jazz_impressions"
+                },
+                {
+                    "primaryKey": "53373",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_laura",
+                    "trackEventName": "mus_radio_08_jazz_laura"
+                },
+                {
+                    "primaryKey": "53375",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_round_midnight",
+                    "trackEventName": "mus_radio_08_jazz_round_midnight"
+                },
+                {
+                    "primaryKey": "53376",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_dark_prince",
+                    "trackEventName": "mus_radio_08_jazz_dark_prince"
+                }
+            ]
+        }
+    ]
+}

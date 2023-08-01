@@ -31,25 +31,20 @@ registerForEvent("onInit", function()
         )
 
         config.common = {
-            path = "/common",
+            path                     = "/common",
 
-            table = "COMMON",
-            column = { key = "key", value = "value" },
-            input = { key = "input", default_value = "IK_C" },
-            default_station = { key = "default_station", default_value = 1 },
-            onscreen_message = { key = "onscreen_message", default_value = 1 },
-            fix_vanilla_radio_notice = { key = "fix_vanilla_radio_notice", default_value = 1 },
+            table                    = "COMMON",
+            column                   = { key = "key", value = "value" },
+            input                    = { key = "input", default_value = "IK_C" },
+            default_station          = { key = "default_station", default_value = 1 },
+            onscreen_message         = { key = "onscreen_message", default_value = true },
+            fix_vanilla_radio_notice = { key = "fix_vanilla_radio_notice", default_value = true },
 
-            station_option_list = { GetLocalizedText("UI-Sorting-Default"), GetLocalizedText("Common-Off") }
+            station_option_list      = { GetLocalizedText("UI-Sorting-Default"), GetLocalizedText("Gameplay-Devices-Radio-NoneStation") }
         }
 
         function config.common.generate()
             config.create(config.common.table, { config.common.column.key, config.common.column.value })
-
-            for _, _, track_list in util.sort_table_by_index(radio.data, radio.station_order) do
-                local station_localized_text = GetLocalizedText(track_list.channel_name)
-                table.insert(config.common.station_option_list, station_localized_text)
-            end
 
             local sub_path = ("%s%s"):format(config.path, config.common.path)
             native_settings.addSubcategory(                  -- Add a subcategory
@@ -77,9 +72,19 @@ registerForEvent("onInit", function()
                 config.common.input.default_value,                                                                         -- defaultKey
                 false,                                                                                                     -- isHold
                 function(key)                                                                                              -- callback
-                    config.set(config.common.table, config.common.column.value, key, config.common.column.key, config.common.input.key)
+                    config.set(
+                        config.common.table,
+                        config.common.column.value,
+                        key,
+                        config.common.column.key,
+                        config.common.input.key
+                    )
                 end
             )
+
+            for station_name in radio.get_station_names() do
+                table.insert(config.common.station_option_list, GetLocalizedText(station_name))
+            end
 
             config.insert(
                 config.common.table,
@@ -101,15 +106,20 @@ registerForEvent("onInit", function()
                 selected_station_idx or config.common.default_station.default_value, -- currentValue
                 config.common.default_station.default_value,                         -- defaultValue
                 function(value)                                                      -- callback
-                    config.set(config.common.table, config.common.column.value, value,
-                        config.common.column.key, config.common.default_station.key)
+                    config.set(
+                        config.common.table,
+                        config.common.column.value,
+                        value,
+                        config.common.column.key,
+                        config.common.default_station.key
+                    )
                 end
             )
 
             config.insert(
                 config.common.table,
                 { config.common.column.key, config.common.value },
-                { config.common.onscreen_message.key, config.common.onscreen_message.default_value },
+                { config.common.onscreen_message.key, util.to_bit(config.common.onscreen_message.default_value) },
                 1
             )
             local onscreen_message_state = config.get(
@@ -126,15 +136,20 @@ registerForEvent("onInit", function()
                 onscreen_message_state or config.common.onscreen_message.default_value, -- currentValue
                 config.common.onscreen_message.default_value,                           -- defaultValue
                 function(state)                                                         -- callback
-                    config.set(config.common.table, config.common.column.value, state and 1 or 0,
-                        config.common.column.key, config.common.onscreen_message.key)
+                    config.set(
+                        config.common.table,
+                        config.common.column.value,
+                        util.to_bit(state),
+                        config.common.column.key,
+                        config.common.onscreen_message.key
+                    )
                 end
             )
 
             config.insert(
                 config.common.table,
                 { config.common.column.key, config.common.value },
-                { config.common.fix_vanilla_radio_notice.key, config.common.fix_vanilla_radio_notice.default_value },
+                { config.common.fix_vanilla_radio_notice.key, util.to_bit(config.common.fix_vanilla_radio_notice.default_value) },
                 1
             )
             local fix_vanilla_radio_notice_state = config.get(
@@ -151,8 +166,13 @@ registerForEvent("onInit", function()
                 fix_vanilla_radio_notice_state or config.common.fix_vanilla_radio_notice.default_value, -- currentValue
                 config.common.fix_vanilla_radio_notice.default_value,                                   -- defaultValue
                 function(state)                                                                         -- callback
-                    config.set(config.common.table, config.common.column.value, state and 1 or 0,
-                        config.common.column.key, config.common.fix_vanilla_radio_notice.key)
+                    config.set(
+                        config.common.table,
+                        config.common.column.value,
+                        util.to_bit(state),
+                        config.common.column.key,
+                        config.common.fix_vanilla_radio_notice.key
+                    )
                 end
             )
         end
@@ -169,54 +189,61 @@ registerForEvent("onInit", function()
         }
 
         function config.track.generate(init)
-            for station_idx, station_evt, track_list in util.sort_table_by_index(radio.data, radio.station_order) do
-                config.track.path.station = ("%s/%s"):format(config.path, station_evt)
+            for _, station_idx in ipairs(radio.station_order) do
+                local tbl_idx = station_idx + 1
 
-                local station_localized_text = GetLocalizedText(track_list.channel_name)
+                local station_data = radio.metadata[tbl_idx]
+
+                local is_filter_all = config.track.filter_idx == 1
+                local is_filter_station_idx = station_idx == radio.station_order[config.track.filter_idx - 1]
+
+                config.track.path.station = ("%s/%s"):format(config.path, station_data.stationEventName)
+
+                local station_localized_text = GetLocalizedText(station_data.secondaryKey)
+
                 if init then
                     table.insert(config.track.station_filter_option_list, station_localized_text)
-                    config.create(config.track.table,
-                        { config.track.column.key, config.track.column.value })
+                    config.create(config.track.table, { config.track.column.key, config.track.column.value })
                 end
 
-                if config.track.filter_idx == 1 or config.track.current_station_state[station_idx] then
+                if is_filter_all or config.track.current_station_state[tbl_idx] then
                     native_settings.removeSubcategory(config.track.path.station)
-                    config.track.current_station_state[station_idx] = false
+                    config.track.current_station_state[tbl_idx] = false
                 end
 
-                if config.track.filter_idx == 1 or station_idx == config.track.filter_idx - 1 then
-                    if not config.track.current_station_state[station_idx] then
+                if is_filter_all or is_filter_station_idx then
+                    if not config.track.current_station_state[tbl_idx] then
                         native_settings.addSubcategory( -- Add a subcategory
                             config.track.path.station,  -- path
                             station_localized_text      -- label
                         )
 
-                        config.track.current_station_state[station_idx] = true
+                        config.track.current_station_state[tbl_idx] = true
                     end
                 else
                     native_settings.removeSubcategory(config.track.path.station)
-                    config.track.current_station_state[station_idx] = false
+                    config.track.current_station_state[tbl_idx] = false
                 end
 
-                for _, track_evt, track_hash_lo in util.sort_table_by_value_order(track_list) do
-                    if (config.track.filter_idx == 1 or station_idx == config.track.filter_idx - 1) and not util.has_value_in_table(radio.ignore_track_list, track_evt) then
+                for _, track_data in ipairs(station_data.tracks) do
+                    if is_filter_all or is_filter_station_idx then
                         if init then
                             config.insert(
                                 config.track.table,
                                 { config.track.column.key, config.track.column.value },
-                                { track_evt, 1 },
+                                { track_data.trackEventName, 1 },
                                 1
                             )
                         end
 
-                        native_settings.addSwitch(                                                                               -- Add a switch
-                            config.track.path.station,                                                                           -- path
-                            GetLocalizedTextByKey(ToCName({ hash_lo = track_hash_lo })),                                         -- label
-                            "",                                                                                                  -- desc
-                            config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true), -- currentValue
-                            true,                                                                                                -- defaultValue
-                            function(state)                                                                                      -- callback
-                                config.set(config.track.table, config.track.column.value, state and 1 or 0, config.track.column.key, track_evt)
+                        native_settings.addSwitch(                                                                                               -- Add a switch
+                            config.track.path.station,                                                                                           -- path
+                            GetLocalizedText(track_data.secondaryKey),                                                                           -- label
+                            "",                                                                                                                  -- desc
+                            config.get(config.track.table, config.track.column.value, config.track.column.key, track_data.trackEventName, true), -- currentValue
+                            true,                                                                                                                -- defaultValue
+                            function(state)                                                                                                      -- callback
+                                config.set(config.track.table, config.track.column.value, util.to_bit(state), config.track.column.key, track_data.trackEventName)
                             end
                         )
                     end
@@ -263,44 +290,50 @@ registerForEvent("onInit", function()
             return false
         end
 
-        local current_station_track_list = radio.get_current_station_track_list()
+        local available_tracks   = {}
+        local unavailable_tracks = {}
 
-        local available_track_list       = {}
-        local unavailable_track_list     = {}
-
-        for track_evt, _ in pairs(current_station_track_list) do
-            if not util.has_value_in_table(radio.ignore_track_list, track_evt) then
+        for primary_key, track_evt in radio.get_current_station_track_evts() do
+            if radio.sq017_enable_kerry_usc_radio_songs or not util.has_value_in_table(radio.quest_fact_tracks, primary_key) then
                 if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
-                    table.insert(available_track_list, track_evt)
+                    table.insert(available_tracks, track_evt)
                 else
-                    table.insert(unavailable_track_list, track_evt)
+                    table.insert(unavailable_tracks, track_evt)
                 end
             end
         end
 
-        if not force and #available_track_list == 0 then
+        if not force and #available_tracks == 0 then
             return false
         end
 
         local next_radio_track
         local final_track_list = {}
-        if #available_track_list >= 2 then -- If two or more are valid
-            for _, track_evt in ipairs(available_track_list) do
+        if #available_tracks >= 2 then -- If two or more are valid
+            for _, track_evt in ipairs(available_tracks) do
                 if track_evt ~= radio.current_track_evt then
                     table.insert(final_track_list, track_evt)
                 end
             end
-        elseif #available_track_list == 1 then           -- If only one is valid
-            final_track_list = available_track_list
-        elseif force and #available_track_list == 0 then -- If all are invalid
-            for _, track_evt in ipairs(unavailable_track_list) do
+        elseif #available_tracks == 1 then           -- If only one is valid
+            final_track_list = available_tracks
+        elseif force and #available_tracks == 0 then -- If all are invalid
+            for _, track_evt in ipairs(unavailable_tracks) do
                 if track_evt ~= radio.current_track_evt then
                     table.insert(final_track_list, track_evt)
                 end
             end
         end
 
-        next_radio_track = final_track_list[Game.RandRange(1, #final_track_list + 1)]
+        local range_max = #final_track_list + 1
+
+        if range_max <= 1 then
+            log("The thread tried to divide an integer value by an integer divisor of zero.")
+
+            return true
+        end
+
+        next_radio_track = final_track_list[Game.RandRange(1, range_max)]
 
         Cron.NextTick(function()
             Game.GetAudioSystem():RequestSongOnRadioStation(radio.get_current_station_evt(), next_radio_track)
@@ -308,10 +341,10 @@ registerForEvent("onInit", function()
 
         radio.current_track_evt = next_radio_track
 
-        return #available_track_list == 1 and false or true
+        return #available_tracks == 1 and false or true
     end
 
-    function radio.set_defaule_station(vehicle_base_object)
+    function radio.set_default_station(vehicle_base_object)
         local selected_station_idx = config.get(
             config.common.table,
             config.common.column.value,
@@ -407,7 +440,7 @@ registerForEvent("onInit", function()
     ---@param self VehicleComponent
     ---@param evt VehicleRadioSongChanged
     ObserveBefore("VehicleComponent", "OnVehicleRadioSongChanged", function(self, evt)
-        if radio.isMounting and self.mounted and evt.radioSongName.hash_lo ~= 0 and radio.get_current_track_evt() then
+        if radio.isMounting and self.mounted and evt.radioSongName.hash_lo ~= 0 and radio.get_current_track_name() then
             if radio.skip() then
                 return
             end
@@ -463,7 +496,7 @@ registerForEvent("onInit", function()
     ---@param self VehicleComponent
     ---@param evt VehicleRadioStationInitialized
     ObserveBefore("VehicleComponent", "OnVehicleRadioStationInitialized", function(self, evt)
-        radio.set_defaule_station(self:GetVehicle())
+        radio.set_default_station(self:GetVehicle())
     end)
 
     ----------------------------------------------------------------------------------------------------
@@ -482,7 +515,7 @@ registerForEvent("onInit", function()
     ---@param value Uint32
     ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleSummonStateChanged", function(self, value)
         if value == EnumInt(vehicleSummonState.Arrived) then
-            radio.set_defaule_station(self.vehicle)
+            radio.set_default_station(self.vehicle)
         end
     end)
 
@@ -493,6 +526,7 @@ registerForEvent("onInit", function()
     ---@param self PlayerPuppet
     ObserveBefore("PlayerPuppet", "OnGameAttached", function(self)
         radio.isMounting = false
+        radio.sq017_enable_kerry_usc_radio_songs = util.to_bool(ScriptGameInstance.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs"))
     end)
 
     ----------------------------------------------------------------------------------------------------
