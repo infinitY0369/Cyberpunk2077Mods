@@ -14,6 +14,8 @@ function util.set_space(loop_count)
     return str
 end
 
+---@param num number
+---@return boolean|nil
 function util.to_bool(num)
     return num == 1 and true or num == 0 and false
 end
@@ -27,7 +29,7 @@ end
 ---@param tbl table
 ---@param value string
 ---@return boolean
-function util.has_value_in_table(tbl, value)
+function util.find_value_in_table(tbl, value)
     for _, v in pairs(tbl) do
         if v == value then
             return true

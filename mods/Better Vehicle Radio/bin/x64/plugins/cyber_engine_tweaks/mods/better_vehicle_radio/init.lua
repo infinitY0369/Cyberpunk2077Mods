@@ -1,7 +1,7 @@
-local _, Cron   = pcall(require, "module\\Cron")
-local _, util   = pcall(require, "module\\util")
-local _, config = pcall(require, "module\\config")
-local _, radio  = pcall(require, "module\\radio")
+local _, Cron   = pcall(require, "modules\\Cron")
+local _, util   = pcall(require, "modules\\util")
+local _, config = pcall(require, "modules\\config")
+local _, radio  = pcall(require, "modules\\radio")
 
 ---@param ... any
 local function log(...)
@@ -294,7 +294,7 @@ registerForEvent("onInit", function()
         local unavailable_tracks = {}
 
         for primary_key, track_evt in radio.get_current_station_track_evts() do
-            if radio.sq017_enable_kerry_usc_radio_songs or not util.has_value_in_table(radio.quest_fact_tracks, primary_key) then
+            if radio.sq017_enable_kerry_usc_radio_songs or not util.find_value_in_table(radio.quest_fact_tracks, primary_key) then
                 if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
                     table.insert(available_tracks, track_evt)
                 else
