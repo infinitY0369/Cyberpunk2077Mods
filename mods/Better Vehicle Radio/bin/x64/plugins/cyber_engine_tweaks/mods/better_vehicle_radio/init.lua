@@ -280,10 +280,100 @@ registerForEvent("onInit", function()
     end
 
     ----------------------------------------------------------------------------------------------------
+    -- RadioExt
+    ----------------------------------------------------------------------------------------------------
+
+    local radioExt = GetMod("radioExt")
+
+    ----------------------------------------------------------------------------------------------------
     -- util
     ----------------------------------------------------------------------------------------------------
 
+    if not Game.GetSystemRequestsHandler():IsPreGame() then
+        local mounted_vehicle = Game.GetMountedVehicle(Game.GetPlayer())
+
+        if mounted_vehicle then
+            radio.isMounting = true
+
+            if mounted_vehicle:IsRadioReceiverActive() then
+                radio.current_track_evt = radio.get_current_track_evt()
+            end
+
+            if not IsDefined(VehicleSummonWidgetGameController.playerVehicle) then
+                VehicleSummonWidgetGameController.playerVehicle = mounted_vehicle
+            end
+        else
+            radio.isMounting = false
+        end
+    end
+
+    function radio.set_default_station(vehicle_base_object)
+        local selected_station_idx = config.get(
+            config.common.table,
+            config.common.column.value,
+            config.common.column.key,
+            config.common.default_station.key
+        ) or config.common.default_station.default_value
+
+        if selected_station_idx == 1 then
+            return
+        elseif selected_station_idx == 2 then
+            vehicle_base_object:ToggleRadioReceiver(false)
+        else
+            vehicle_base_object:SetRadioReceiverStation(radio.station_order[selected_station_idx - 2])
+        end
+    end
+
+    local function set_onscreen_message(msg, no_evt)
+        if config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.onscreen_message.key, true) then
+            local simple_screen_message     = SimpleScreenMessage.new()
+            simple_screen_message.isShown   = true
+            simple_screen_message.duration  = 5.0
+            simple_screen_message.message   = msg
+            simple_screen_message.isInstant = true
+            Game.GetBlackboardSystem()
+                    :Get(Game.GetAllBlackboardDefs().UI_Notifications)
+                    :SetVariant(Game.GetAllBlackboardDefs().UI_Notifications.OnscreenMessage, ToVariant(simple_screen_message), true)
+        end
+
+        if not no_evt and config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.fix_vanilla_radio_notice.key, true) then
+            ScriptGameInstance.GetUISystem():QueueEvent(UIVehicleRadioEvent.new())
+        end
+    end
+
+    local function display_radio_notice(station_name, track_name, no_evt)
+        local loc_station_name = station_name or GetLocalizedTextByKey(radio.get_current_station_name())
+        local loc_track_name   = track_name or GetLocalizedTextByKey(radio.get_current_track_name())
+
+        set_onscreen_message(("%s\n\n%s%s"):format(loc_station_name, util.set_space(8), loc_track_name), no_evt)
+    end
+
     function radio.skip(force)
+        if radioExt and RadioExt then
+            local station_name = Game.GetMountedVehicle(Game.GetPlayer()):GetBlackboard():GetName(GetAllBlackboardDefs().Vehicle.VehRadioStationName)
+            local ext_radio = radioExt.radioManager.managerV:getRadioByName(station_name.value)
+
+            if ext_radio then
+                ext_radio:currentSongDone()
+                ext_radio.currentSong = ext_radio.songs[Game.RandRange(1, #ext_radio.songs + 1)]
+                ext_radio:startNewSong()
+
+                radioExt.observersV.customNotif = {
+                    name = ext_radio.name,
+                    path = ext_radio.currentSong.path
+                }
+
+                local ext_station_name          = ext_radio.name
+                local ext_track_name            = ext_radio.currentSong.path:gsub(("%s\\"):format(ext_radio.path), ""):gsub("%..*", "")
+
+                radio.current_track_evt         = ext_radio.currentSong.path
+
+                display_radio_notice(ext_station_name, ext_track_name)
+
+                return true
+            end
+        end
+
         local current_track_evt = radio.get_current_track_evt()
         if not force and config.get(config.track.table, config.track.column.value, config.track.column.key, current_track_evt, true) then
             radio.current_track_evt = current_track_evt
@@ -336,29 +426,13 @@ registerForEvent("onInit", function()
         next_radio_track = final_track_list[Game.RandRange(1, range_max)]
 
         Cron.NextTick(function()
-            Game.GetAudioSystem():RequestSongOnRadioStation(radio.get_current_station_evt(), next_radio_track)
-        end, nil)
+                          Game.GetAudioSystem():RequestSongOnRadioStation(radio.get_current_station_evt(), next_radio_track)
+                      end,
+                      nil)
 
         radio.current_track_evt = next_radio_track
 
         return #available_tracks == 1 and false or true
-    end
-
-    function radio.set_default_station(vehicle_base_object)
-        local selected_station_idx = config.get(
-            config.common.table,
-            config.common.column.value,
-            config.common.column.key,
-            config.common.default_station.key
-        ) or config.common.default_station.default_value
-
-        if selected_station_idx == 1 then
-            return
-        elseif selected_station_idx == 2 then
-            vehicle_base_object:ToggleRadioReceiver(false)
-        else
-            vehicle_base_object:SetRadioReceiverStation(radio.station_order[selected_station_idx - 2])
-        end
     end
 
     config.key_input_event = NewProxy(
@@ -386,51 +460,6 @@ registerForEvent("onInit", function()
         }
     )
 
-    local function set_onscreen_message(msg)
-        if config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.onscreen_message.key, true) then
-            local simple_screen_message     = SimpleScreenMessage.new()
-            simple_screen_message.isShown   = true
-            simple_screen_message.duration  = 5.0
-            simple_screen_message.message   = msg
-            simple_screen_message.isInstant = true
-            Game.GetBlackboardSystem()
-                :Get(Game.GetAllBlackboardDefs().UI_Notifications)
-                :SetVariant(Game.GetAllBlackboardDefs().UI_Notifications.OnscreenMessage, ToVariant(simple_screen_message), true)
-        end
-
-        if config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.fix_vanilla_radio_notice.key, true) then
-            ScriptGameInstance.GetUISystem():QueueEvent(UIVehicleRadioEvent.new())
-        end
-    end
-
-    local function display_radio_notice()
-        return set_onscreen_message(
-            ("%s\n\n%s%s"):format(
-                GetLocalizedTextByKey(radio.get_current_station_name()),
-                util.set_space(8),
-                GetLocalizedTextByKey(radio.get_current_track_name())
-            )
-        )
-    end
-
-    if not Game.GetSystemRequestsHandler():IsPreGame() then
-        local mounted_vehicle = Game.GetMountedVehicle(Game.GetPlayer())
-
-        if mounted_vehicle then
-            radio.isMounting = true
-
-            if mounted_vehicle:IsRadioReceiverActive() then
-                radio.current_track_evt = radio.get_current_track_evt()
-            end
-
-            if not IsDefined(VehicleSummonWidgetGameController.playerVehicle) then
-                VehicleSummonWidgetGameController.playerVehicle = mounted_vehicle
-            end
-        else
-            radio.isMounting = false
-        end
-    end
-
     Game.GetCallbackSystem():RegisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("KeyInputEvent"), true)
 
     ----------------------------------------------------------------------------------------------------
@@ -451,15 +480,50 @@ registerForEvent("onInit", function()
 
     ---@param self VehicleComponent
     ---@param evt VehicleRadioStationChanged
-    ObserveBefore("VehicleComponent", "OnVehicleRadioStationChanged", function(self, evt)
+    ObserveAfter("VehicleComponent", "OnVehicleRadioStationChanged", function(self, evt)
         if radio.isMounting and evt.isActive and self.mounted and evt.radioSongName.hash_lo ~= 0 then
             if radio.skip() then
                 return
             end
 
+            if not self.radioState then
+                return
+            end
+
             Cron.NextTick(function()
-                display_radio_notice()
-            end, nil)
+                              display_radio_notice()
+                          end,
+                          nil)
+        end
+    end)
+
+    ---@param self VehicleRadioPopupGameController
+    ObserveAfter("VehicleRadioPopupGameController", "Activate", function(self)
+        local ext_station_name = self.selectedItem:GetStationData().record:DisplayName()
+        local ext_radio = radioExt.radioManager.managerV:getRadioByName(ext_station_name)
+        if ext_radio then
+            radioExt.observersV.customNotif = {
+                name = ext_radio.name,
+                path = ext_radio.currentSong.path
+            }
+
+            display_radio_notice(ext_radio.name, ext_radio.currentSong.path:gsub(("%s\\"):format(ext_radio.path), ""):gsub("%..*", ""))
+        end
+    end)
+
+    ---@param self VehicleComponent
+    ---@param evt VehicleRadioEvent
+    ObserveBefore("VehicleComponent", "OnVehicleRadioEvent", function(self, evt)
+        if evt.toggle and not evt.setStation then
+            Cron.After(0.2,
+                       function()
+                           local station_name = Game.GetMountedVehicle(Game.GetPlayer()):GetBlackboard():GetName(GetAllBlackboardDefs().Vehicle.VehRadioStationName)
+                           local ext_radio = radioExt.radioManager.managerV:getRadioByName(station_name.value)
+                           if ext_radio then
+                               display_radio_notice(ext_radio.name, ext_radio.currentSong.path:gsub(("%s\\"):format(ext_radio.path), ""):gsub("%..*", ""), true)
+                           end
+                       end,
+                       nil)
         end
     end)
 
