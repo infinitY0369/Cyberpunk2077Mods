@@ -355,7 +355,11 @@ registerForEvent("onInit", function()
 
             if ext_radio then
                 ext_radio:currentSongDone()
-                ext_radio.currentSong = ext_radio.songs[Game.RandRange(1, #ext_radio.songs + 1)]
+
+                repeat
+                    ext_radio.currentSong = ext_radio.songs[Game.RandRange(1, #ext_radio.songs + 1)]
+                until ext_radio.currentSong.path ~= radio.current_track_evt
+
                 ext_radio:startNewSong()
 
                 radioExt.observersV.customNotif = {
@@ -480,7 +484,7 @@ registerForEvent("onInit", function()
 
     ---@param self VehicleComponent
     ---@param evt VehicleRadioStationChanged
-    ObserveAfter("VehicleComponent", "OnVehicleRadioStationChanged", function(self, evt)
+    ObserveBefore("VehicleComponent", "OnVehicleRadioStationChanged", function(self, evt)
         if radio.isMounting and evt.isActive and self.mounted and evt.radioSongName.hash_lo ~= 0 then
             if radio.skip() then
                 return
@@ -494,20 +498,6 @@ registerForEvent("onInit", function()
                               display_radio_notice()
                           end,
                           nil)
-        end
-    end)
-
-    ---@param self VehicleRadioPopupGameController
-    ObserveAfter("VehicleRadioPopupGameController", "Activate", function(self)
-        local ext_station_name = self.selectedItem:GetStationData().record:DisplayName()
-        local ext_radio = radioExt.radioManager.managerV:getRadioByName(ext_station_name)
-        if ext_radio then
-            radioExt.observersV.customNotif = {
-                name = ext_radio.name,
-                path = ext_radio.currentSong.path
-            }
-
-            display_radio_notice(ext_radio.name, ext_radio.currentSong.path:gsub(("%s\\"):format(ext_radio.path), ""):gsub("%..*", ""))
         end
     end)
 
@@ -561,6 +551,19 @@ registerForEvent("onInit", function()
     ---@param evt VehicleRadioStationInitialized
     ObserveBefore("VehicleComponent", "OnVehicleRadioStationInitialized", function(self, evt)
         radio.set_default_station(self:GetVehicle())
+    end)
+
+    ----------------------------------------------------------------------------------------------------
+    -- VehicleComponent
+    ----------------------------------------------------------------------------------------------------
+
+    ---@param self VehicleRadioPopupGameController
+    ObserveBefore("VehicleRadioPopupGameController", "Activate", function(self)
+        local ext_station_name = self.selectedItem:GetStationData().record:DisplayName()
+        local ext_radio        = radioExt.radioManager.managerV:getRadioByName(ext_station_name)
+        if ext_radio then
+            display_radio_notice(ext_radio.name, ext_radio.currentSong.path:gsub(("%s\\"):format(ext_radio.path), ""):gsub("%..*", ""))
+        end
     end)
 
     ----------------------------------------------------------------------------------------------------
