@@ -3,10 +3,13 @@ local radio         = {}
 local metadata_json = "data/metadata.json"
 local file          = io.open(metadata_json, "r")
 
-radio.metadata      = json.decode(file:read("*a")).radioStations
-file:close()
+if file then
+    radio.metadata = json.decode(file:read("*a")).radioStations
 
-radio.station_order = { 4, 0, 10, 1, 9, 8, 6, 2, 3, 7, 5 }
+    file:close()
+end
+
+radio.station_order     = { 4, 0, 10, 1, 9, 8, 6, 2, 3, 7, 5, 11, 12, 13 }
 radio.quest_fact_tracks = { "52893", "52892" }
 
 local function find_station_data_by_name(station_name)
@@ -17,14 +20,22 @@ local function find_station_data_by_name(station_name)
     end
 end
 
----@return CName
+---@return CName?
 function radio.get_current_station_name()
-    return Game.GetMountedVehicle(Game.GetPlayer()):GetRadioReceiverStationName()
+    local mounted_vehicle = Game.GetMountedVehicle(Game.GetPlayer())
+
+    if mounted_vehicle then
+        return mounted_vehicle:GetRadioReceiverStationName()
+    end
 end
 
----@return string
+---@return string?
 function radio.get_current_station_evt()
     local current_station_name = radio.get_current_station_name()
+
+    if not current_station_name then
+        return
+    end
 
     local current_station_data = find_station_data_by_name(current_station_name)
 
@@ -35,6 +46,10 @@ end
 
 function radio.get_station_names()
     local station_data = radio.metadata
+
+    if not station_data then
+        return
+    end
 
     local idx = 0
     return function()
@@ -67,20 +82,37 @@ function radio.get_current_station_track_evts()
     end
 end
 
----@return CName
+---@return CName?
 function radio.get_current_track_name()
-    return Game.GetMountedVehicle(Game.GetPlayer()):GetRadioReceiverTrackName()
+    local mounted_vehicle = Game.GetMountedVehicle(Game.GetPlayer())
+
+    if mounted_vehicle then
+        return mounted_vehicle:GetRadioReceiverTrackName()
+    end
 end
 
----@return string
+---@return string?
 function radio.get_current_track_evt()
     local current_station_name = radio.get_current_station_name()
-    local current_track_name   = radio.get_current_track_name()
+
+    if not current_station_name then
+        return
+    end
+
+    local current_track_name = radio.get_current_track_name()
+
+    if not current_track_name then
+        return
+    end
 
     local current_station_data = find_station_data_by_name(current_station_name)
 
+    if not current_station_data then
+        return
+    end
+
     for _, track_data in ipairs(current_station_data.tracks) do
-        if tonumber(track_data.primaryKey) == current_track_name.hash_lo then
+        if track_data.primaryKey == tostring(current_track_name.hash_lo) then
             return track_data.trackEventName
         end
     end

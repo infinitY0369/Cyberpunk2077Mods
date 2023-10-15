@@ -472,7 +472,7 @@
                 },
                 {
                     "primaryKey": "52821",
-                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_likewise",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_LikeWise",
                     "trackEventName": "mus_radio_01_attrock_likewise"
                 },
                 {
@@ -482,7 +482,7 @@
                 },
                 {
                     "primaryKey": "52819",
-                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_i_will_follow",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-att_rock_I_will_follow",
                     "trackEventName": "mus_radio_01_att_rock_i_will_follow"
                 },
                 {
@@ -610,12 +610,12 @@
                 {
                     "primaryKey": "52893",
                     "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_off_the_leash",
-                    "trackEventName": "mus_custom_radio_off_the_leash"
+                    "trackEventName": "mus_radio_05_pop_off_the_leash"
                 },
                 {
                     "primaryKey": "52892",
                     "secondaryKey": "Gameplay-Devices-Radio_tracks-pop_user_friendly",
-                    "trackEventName": "mus_custom_radio_user_friendly"
+                    "trackEventName": "mus_radio_05_pop_user_friendly"
                 }
             ]
         },
@@ -753,7 +753,7 @@
                 },
                 {
                     "primaryKey": "52938",
-                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_i_wont_let_you_go",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-metal_I_wont_let_you_go",
                     "trackEventName": "mus_radio_11_metal_i_wont_let_you_go"
                 }
             ]
@@ -839,6 +839,167 @@
                     "primaryKey": "53376",
                     "secondaryKey": "Gameplay-Devices-Radio_tracks-jazz_dark_prince",
                     "trackEventName": "mus_radio_08_jazz_dark_prince"
+                }
+            ]
+        },
+        {
+            "primaryKey": "93677",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationGrowlFm",
+            "stationEventName": "radio_station_12_growl_fm",
+            "tracks": [
+                {
+                    "primaryKey": "93678",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_afterlife",
+                    "trackEventName": "mus_radio_12_afterlife"
+                },
+                {
+                    "primaryKey": "93679",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_candyshell",
+                    "trackEventName": "mus_radio_12_candyshell"
+                },
+                {
+                    "primaryKey": "93680",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_ch",
+                    "trackEventName": "mus_radio_12_ch"
+                },
+                {
+                    "primaryKey": "93681",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_do_or_die",
+                    "trackEventName": "mus_radio_12_do_or_die"
+                },
+                {
+                    "primaryKey": "93682",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_flatline",
+                    "trackEventName": "mus_radio_12_flatline"
+                },
+                {
+                    "primaryKey": "93683",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_fumes",
+                    "trackEventName": "mus_radio_12_fumes"
+                },
+                {
+                    "primaryKey": "93684",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_killshot",
+                    "trackEventName": "mus_radio_12_killshot"
+                },
+                {
+                    "primaryKey": "93685",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_kiroshi",
+                    "trackEventName": "mus_radio_12_kiroshi"
+                },
+                {
+                    "primaryKey": "93686",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_lit",
+                    "trackEventName": "mus_radio_12_lit"
+                },
+                {
+                    "primaryKey": "93687",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_nebula",
+                    "trackEventName": "mus_radio_12_nebula"
+                },
+                {
+                    "primaryKey": "93688",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_skin_on_flesh",
+                    "trackEventName": "mus_radio_12_skin_on_flesh"
+                },
+                {
+                    "primaryKey": "93689",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_slipstream",
+                    "trackEventName": "mus_radio_12_slipstream"
+                },
+                {
+                    "primaryKey": "93690",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_stars_die",
+                    "trackEventName": "mus_radio_12_stars_die"
+                },
+                {
+                    "primaryKey": "93691",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-growl_to_heaven",
+                    "trackEventName": "mus_radio_12_to_heaven"
+                }
+            ]
+        },
+        {
+            "primaryKey": "93675",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationDarkStar",
+            "stationEventName": "radio_station_13_dark_star",
+            "tracks": [
+                {
+                    "primaryKey": "93692",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_27fuckdemons",
+                    "trackEventName": "mus_radio_13_dstar_27fuckdemons"
+                },
+                {
+                    "primaryKey": "93693",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_backxwash",
+                    "trackEventName": "mus_radio_13_dstar_backxwash"
+                },
+                {
+                    "primaryKey": "93694",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_chokehold",
+                    "trackEventName": "mus_radio_13_dstar_chokehold"
+                },
+                {
+                    "primaryKey": "93695",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_cykoarctic",
+                    "trackEventName": "mus_radio_13_dstar_cykoarctic"
+                },
+                {
+                    "primaryKey": "93696",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_hagop",
+                    "trackEventName": "mus_radio_13_dstar_hagop"
+                },
+                {
+                    "primaryKey": "93697",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_julek1",
+                    "trackEventName": "mus_radio_13_dstar_julek1"
+                },
+                {
+                    "primaryKey": "93698",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_julek2",
+                    "trackEventName": "mus_radio_13_dstar_julek2"
+                },
+                {
+                    "primaryKey": "93699",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_kyberpunk",
+                    "trackEventName": "mus_radio_13_dstar_kyberpunk"
+                },
+                {
+                    "primaryKey": "93700",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_minionsex",
+                    "trackEventName": "mus_radio_13_dstar_minionsex"
+                },
+                {
+                    "primaryKey": "93702",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_roller",
+                    "trackEventName": "mus_radio_13_dstar_roller"
+                },
+                {
+                    "primaryKey": "93703",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_zuukuka",
+                    "trackEventName": "mus_radio_13_dstar_zuukuka"
+                },
+                {
+                    "primaryKey": "93705",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_drk",
+                    "trackEventName": "mus_radio_13_dstar_drk"
+                },
+                {
+                    "primaryKey": "93701",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-dstar_mzuzu",
+                    "trackEventName": "mus_radio_13_dstar_mzuzu"
+                }
+            ]
+        },
+        {
+            "primaryKey": "93676",
+            "secondaryKey": "Gameplay-Devices-Radio-RadioStationImpulseFM",
+            "stationEventName": "radio_station_14_impulse_fm",
+            "tracks": [
+                {
+                    "primaryKey": "93704",
+                    "secondaryKey": "Gameplay-Devices-Radio_tracks-impulse_djset",
+                    "trackEventName": "mus_radio_14_impulse_djset"
                 }
             ]
         }

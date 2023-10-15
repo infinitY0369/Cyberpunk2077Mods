@@ -15,9 +15,13 @@ function util.set_space(loop_count)
 end
 
 ---@param num number
----@return boolean|nil
+---@return boolean?
 function util.to_bool(num)
-    return num == 1 and true or num == 0 and false
+    if num == 1 then
+        return true
+    elseif num == 0 then
+        return false
+    end
 end
 
 ---@param bool boolean
