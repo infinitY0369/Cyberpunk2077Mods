@@ -313,19 +313,21 @@ registerForEvent("onInit", function()
             if active_station_data then
                 local ext_radio = radio_ext.radioManager.managerV:getRadioByName(active_station_data.station)
 
-                if #ext_radio.songs <= 1 then
+                local ext_radio_songs = util.deepcopy(ext_radio.songs)
+
+                if #ext_radio_songs <= 1 then
                     return false
                 end
 
                 ext_radio:currentSongDone()
 
-                for idx, song_data in ipairs(ext_radio.songs) do
+                for idx, song_data in ipairs(ext_radio_songs) do
                     if song_data.path == radio.current_track_evt then
-                        table.remove(ext_radio.songs, idx)
+                        table.remove(ext_radio_songs, idx)
                     end
                 end
 
-                ext_radio.currentSong = ext_radio.songs[Game.RandRange(1, #ext_radio.songs + 1)]
+                ext_radio.currentSong = ext_radio_songs[Game.RandRange(1, #ext_radio_songs + 1)]
                 ext_radio.tick = 0
 
                 ext_radio:startNewSong()
