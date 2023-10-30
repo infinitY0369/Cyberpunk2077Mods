@@ -354,7 +354,7 @@ registerForEvent("onInit", function()
                 if active_station_data then
                     local ext_radio = radio_ext.radioManager.managerV:getRadioByName(active_station_data.station)
 
-                    radio.current_track_evt = ext_radio.currentSong.path
+                    current_track_evt = ext_radio.currentSong.path
 
                     return false
                 end
@@ -408,9 +408,18 @@ registerForEvent("onInit", function()
             return true
         end
 
+        local station_evt = radio.get_current_station_evt()
         next_radio_track = final_track_list[Game.RandRange(1, range_max)]
 
-        Game.GetAudioSystem():RequestSongOnRadioStation(radio.get_current_station_evt(), next_radio_track)
+        if not station_evt or not next_radio_track then
+            return false
+        end
+
+        Game.GetAudioSystem():RequestSongOnRadioStation(station_evt, next_radio_track)
+
+        if not next_radio_track == radio.get_current_track_evt() then
+            return false
+        end
 
         radio.current_track_evt = next_radio_track
 
