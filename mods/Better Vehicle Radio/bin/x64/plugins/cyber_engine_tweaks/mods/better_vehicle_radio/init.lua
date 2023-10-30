@@ -369,7 +369,7 @@ registerForEvent("onInit", function()
         local unavailable_tracks = {}
 
         for primary_key, track_evt in radio.get_current_station_track_evts() do
-            if util.to_bool(ScriptGameInstance.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs")) or not util.find_value_in_table(radio.quest_fact_tracks, primary_key) then
+            if util.to_bool(Game.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs")) or not util.find_value_in_table(radio.quest_fact_tracks, primary_key) then
                 if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
                     table.insert(available_tracks, track_evt)
                 else
