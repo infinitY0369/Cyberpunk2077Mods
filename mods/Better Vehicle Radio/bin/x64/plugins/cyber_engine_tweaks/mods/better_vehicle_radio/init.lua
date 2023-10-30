@@ -251,8 +251,10 @@ registerForEvent("onInit", function()
 
     local radio_ext = GetMod("radioExt")
 
-    if not Game.GetSystemRequestsHandler():IsPreGame() then
-        if Game.GetMountedVehicle(Game.GetPlayer()):IsRadioReceiverActive() then
+    local system_requests_handler = Game.GetSystemRequestsHandler()
+    if system_requests_handler and not system_requests_handler:IsPreGame() then
+        local mounted_vehicle = Game.GetMountedVehicle(Game.GetPlayer())
+        if mounted_vehicle and mounted_vehicle:IsRadioReceiverActive() then
             radio.current_track_evt = radio.get_current_track_evt()
         end
     end
