@@ -41,10 +41,11 @@ class Lua:
     @staticmethod
     def remove_comment(code):
         # Remove block comments
-        code = re.sub(r"\n?[\t| ]*--\[\[.*?\]\][\t| ]*", "", code, flags=re.DOTALL)
+        code = re.sub(r"[\t| ]*--\[\[.*\]\][\t| ]*", "", code, flags=re.DOTALL)
 
         # Remove single-line comments
-        code = re.sub(r"\n?[\t| ]*--.*", "", code)
+        code = re.sub(r"(?m)^[\t| ]*--.*\n", "", code)  # Line with only comments
+        code = re.sub(r"[\t| ]*--.*", "", code)  # Comments next to the code
 
         return code
 
