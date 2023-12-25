@@ -1,14 +1,12 @@
 local util = {}
 
----@param loop_count integer
+---@param space_count integer
 ---@return string
-function util.set_space(loop_count)
+function util.set_space(space_count)
     local str = ""
 
-    if loop_count then
-        for _ = 1, loop_count do
-            str = ("%s "):format(str)
-        end
+    for _ = 1, space_count do
+        str = ("%s "):format(str)
     end
 
     return str
@@ -43,28 +41,60 @@ function util.find_value_in_table(tbl, value)
     return false
 end
 
----@param orig table
----@param copies table?
----@return table
-function util.deepcopy(orig, copies)
-    copies = copies or {}
-    local orig_type = type(orig)
-    local copy
-    if orig_type == "table" then
-        if copies[orig] then
-            copy = copies[orig]
-        else
-            copy = {}
-            copies[orig] = copy
-            for orig_key, orig_value in next, orig, nil do
-                copy[util.deepcopy(orig_key, copies)] = util.deepcopy(orig_value, copies)
-            end
-            setmetatable(copy, util.deepcopy(getmetatable(orig), copies))
-        end
-    else
-        copy = orig
+---@generic T
+---@param str T
+---@return T
+function util.string_with_quotes(str)
+    if type(str) ~= "string" then
+        return str
     end
-    return copy
+
+    return ("\"%s\""):format(str)
+end
+
+---@param column_values table
+---@return string
+function util.format_table_values(column_values)
+    for i, v in ipairs(column_values) do
+        if type(v) == "string" then
+            column_values[i] = util.string_with_quotes(v)
+        end
+    end
+
+    return table.concat(column_values, ", ")
+end
+
+---@param file_name string
+---@return any
+function util.get_file_data(file_name)
+    local file, err = io.open(file_name, "r")
+
+    if not file or err then
+        return
+    end
+
+    local file_data = file:read("*a")
+    file:close()
+
+    return file_data
+end
+
+---@param message String
+function util.show_screen_message(message)
+    local simple_screen_message = SimpleScreenMessage.new({
+        isShown = true,
+        message = message
+    })
+
+    local ui_notifications_def  = GetAllBlackboardDefs().UI_Notifications
+    Game.GetBlackboardSystem():Get(ui_notifications_def):SetVariant(ui_notifications_def.OnscreenMessage, ToVariant(simple_screen_message), true)
+end
+
+---@return boolean
+function util.is_in_menu()
+    local ui_system_def = GetAllBlackboardDefs().UI_System
+
+    return Game.GetBlackboardSystem():Get(ui_system_def):GetBool(ui_system_def.IsInMenu)
 end
 
 return util

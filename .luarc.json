@@ -61,5 +61,8 @@
         "remove_call_expression_list_finish_comma": "true",
         "end_statement_with_semicolon": "replace_with_newline"
     },
-    "runtime.version": "LuaJIT"
+    "runtime.version": "LuaJIT",
+    "diagnostics.disable": [
+        "invisible"
+    ]
 }

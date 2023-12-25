@@ -1,24 +1,34 @@
-local c, config = pcall(require, "modules\\config")
-local r, radio  = pcall(require, "modules\\radio")
-local u, util   = pcall(require, "modules\\util")
+local _c, config = pcall(require, "modules\\config")
+local _r, radio  = pcall(require, "modules\\radio")
+local _u, util   = pcall(require, "modules\\util")
 
 ---@param ... any
+---@return nil
 local function log(...)
-    local args = { ... }
+    local args = {...}
     for i, v in ipairs(args) do
         args[i] = tostring(v)
     end
+
     print(("[better_vehicle_radio] %s"):format((table.concat(args, " "))))
 end
 
 registerForEvent("onInit", function()
-    if not c or not r or not u then
-        log("Failed to load modules.")
-
+    if not _c or not _r or not _u then
         return
     end
 
     local native_settings = GetMod("nativeSettings")
+    radio.ext = GetMod("radioExt")
+
+    local is_codeware_found = type(Codeware) == "userdata"
+    radio.is_radio_ext_found = radio.ext and type(RadioExt) == "userdata"
+
+    if not is_codeware_found or not native_settings then
+        return
+    end
+
+    radio.init()
 
     if native_settings then
         config.path = "/better_vehicle_radio"
@@ -28,23 +38,25 @@ registerForEvent("onInit", function()
             "Better Vehicle Radio", -- label
             function()              -- callback
                 config.controller_input = false
+
+                if radio.is_receiver_active() then
+                    radio.skip(false)
+                end
             end
         )
 
         config.common = {
-            path                = "/common",
+            path             = "/common",
 
-            table               = "COMMON",
-            column              = { key = "key", value = "value" },
-            input               = { key = "input", default_value = GetPlayer():PlayerLastUsedKBM() and "IK_C" or "IK_Pad_DigitLeft" },
-            default_station     = { key = "default_station", default_value = 1 },
-            onscreen_message    = { key = "onscreen_message", default_value = false },
-
-            station_option_list = { GetLocalizedText("UI-Sorting-Default"), GetLocalizedText("Gameplay-Devices-Radio-NoneStation") }
+            table            = "COMMON",
+            column           = {key = "key", value = "value"},
+            input            = {key = "input", default_value = GetPlayer():PlayerLastUsedKBM() and EInputKey.IK_C.value or EInputKey.IK_Pad_DigitLeft.value},
+            info_popup       = {key = "info_popup", default_value = false},
+            onscreen_message = {key = "onscreen_message", default_value = false}
         }
 
         function config.common.generate()
-            config.create(config.common.table, { config.common.column.key, config.common.column.value })
+            config.create(config.common.table, {config.common.column.key, config.common.column.value})
 
             local sub_path = ("%s%s"):format(config.path, config.common.path)
             native_settings.addSubcategory(                  -- Add a subcategory
@@ -54,8 +66,8 @@ registerForEvent("onInit", function()
 
             config.insert(
                 config.common.table,
-                { config.common.column.key, config.common.value },
-                { config.common.input.key, config.common.input.default_value },
+                {config.common.column.key, config.common.value},
+                {config.common.input.key, config.common.input.default_value},
                 1
             )
             local selected_key = config.get(
@@ -82,44 +94,40 @@ registerForEvent("onInit", function()
                 end
             )
 
-            for station_name in radio.get_station_names() do
-                table.insert(config.common.station_option_list, GetLocalizedText(station_name))
-            end
-
             config.insert(
                 config.common.table,
-                { config.common.column.key, config.common.value },
-                { config.common.default_station.key, config.common.default_station.default_value },
+                {config.common.column.key, config.common.value},
+                {config.common.info_popup.key, util.to_bit(config.common.info_popup.default_value)},
                 1
             )
-            local selected_station_idx = config.get(
+            local info_popup_state = config.get(
                 config.common.table,
                 config.common.column.value,
                 config.common.column.key,
-                config.common.default_station.key
+                config.common.info_popup.key,
+                true
             )
-            native_settings.addSelectorString(                                       -- Add a list of strings
-                sub_path,                                                            -- path
-                GetLocalizedText("Gameplay-Devices-DisplayNames-Radio"),             -- label
-                "",                                                                  -- desc
-                config.common.station_option_list,                                   -- elements
-                selected_station_idx or config.common.default_station.default_value, -- currentValue
-                config.common.default_station.default_value,                         -- defaultValue
-                function(value)                                                      -- callback
+            native_settings.addSwitch(                                      -- Add a switch
+                sub_path,                                                   -- path
+                "Show notification on Radioport",                           -- label
+                "",                                                         -- desc
+                info_popup_state or config.common.info_popup.default_value, -- currentValue
+                config.common.info_popup.default_value,                     -- defaultValue
+                function(state)                                             -- callback
                     config.set(
                         config.common.table,
                         config.common.column.value,
-                        value,
+                        util.to_bit(state),
                         config.common.column.key,
-                        config.common.default_station.key
+                        config.common.info_popup.key
                     )
                 end
             )
 
             config.insert(
                 config.common.table,
-                { config.common.column.key, config.common.value },
-                { config.common.onscreen_message.key, util.to_bit(config.common.onscreen_message.default_value) },
+                {config.common.column.key, config.common.value},
+                {config.common.onscreen_message.key, util.to_bit(config.common.onscreen_message.default_value)},
                 1
             )
             local onscreen_message_state = config.get(
@@ -151,68 +159,68 @@ registerForEvent("onInit", function()
             path                       = {},
 
             table                      = "TRACK",
-            column                     = { key = "sound_event", value = "value" },
+            column                     = {key = "sound_event", value = "value"},
 
-            station_filter_option_list = { GetLocalizedText("UI-Menus-WorldMap-Filter-All") },
+            station_filter_option_list = {GetLocalizedText("UI-Menus-WorldMap-Filter-All")},
             filter_idx                 = 1,
             current_station_state      = {}
         }
 
         function config.track.generate(init)
-            for _, station_idx in ipairs(radio.station_order) do
-                local tbl_idx = station_idx + 1
-
-                local station_data = radio.metadata[tbl_idx]
+            for idx = 1, radio.get_stations_count() do
+                local station_index = radio.get_station_index_by_ui_index(idx - 1)
+                local metadata = radio.metadata[station_index + 1]
 
                 local is_filter_all = config.track.filter_idx == 1
-                local is_filter_station_idx = station_idx == radio.station_order[config.track.filter_idx - 1]
+                local is_filter_station = idx == config.track.filter_idx - 1
 
-                config.track.path.station = ("%s/%s"):format(config.path, station_data.stationEventName)
+                config.track.path.station = ("%s/%s"):format(config.path, metadata.stationEventName)
 
-                local station_localized_text = GetLocalizedText(station_data.secondaryKey)
+                local station_localized_text = GetLocalizedText(metadata.secondaryKey)
 
                 if init then
                     table.insert(config.track.station_filter_option_list, station_localized_text)
-                    config.create(config.track.table, { config.track.column.key, config.track.column.value })
+                    config.create(config.track.table, {config.track.column.key, config.track.column.value})
                 end
 
-                if is_filter_all or config.track.current_station_state[tbl_idx] then
+                if is_filter_all or config.track.current_station_state[idx] then
                     native_settings.removeSubcategory(config.track.path.station)
-                    config.track.current_station_state[tbl_idx] = false
+                    config.track.current_station_state[idx] = false
                 end
 
-                if is_filter_all or is_filter_station_idx then
-                    if not config.track.current_station_state[tbl_idx] then
+                if is_filter_all or is_filter_station then
+                    if not config.track.current_station_state[idx] then
                         native_settings.addSubcategory( -- Add a subcategory
                             config.track.path.station,  -- path
                             station_localized_text      -- label
                         )
 
-                        config.track.current_station_state[tbl_idx] = true
+                        config.track.current_station_state[idx] = true
                     end
                 else
                     native_settings.removeSubcategory(config.track.path.station)
-                    config.track.current_station_state[tbl_idx] = false
+                    config.track.current_station_state[idx] = false
                 end
 
-                for _, track_data in ipairs(station_data.tracks) do
-                    if is_filter_all or is_filter_station_idx then
+                for _, track_data in ipairs(metadata.tracks) do
+                    if is_filter_all or is_filter_station then
                         if init then
-                            config.insert(
-                                config.track.table,
-                                { config.track.column.key, config.track.column.value },
-                                { track_data.trackEventName, 1 },
-                                1
-                            )
+                            config.insert(config.track.table,
+                                          {config.track.column.key, config.track.column.value},
+                                          {track_data.trackEventName, 1},
+                                          1)
                         end
 
-                        native_settings.addSwitch(                                                                                               -- Add a switch
-                            config.track.path.station,                                                                                           -- path
-                            GetLocalizedText(track_data.secondaryKey),                                                                           -- label
-                            "",                                                                                                                  -- desc
-                            config.get(config.track.table, config.track.column.value, config.track.column.key, track_data.trackEventName, true), -- currentValue
-                            true,                                                                                                                -- defaultValue
-                            function(state)                                                                                                      -- callback
+                        local desc = track_data.isStreamingFriendly == 0 and "This song is copyrighted." or ""
+
+                        native_settings.addSwitch(                       -- Add a switch
+                            config.track.path.station,                   -- path
+                            GetLocalizedText(track_data.secondaryKey),   -- label
+                            desc,                                        -- desc
+                            config.get(config.track.table, config.track.column.value, config.track.column.key,
+                                       track_data.trackEventName, true), -- currentValue
+                            true,                                        -- defaultValue
+                            function(state)                              -- callback
                                 config.set(config.track.table, config.track.column.value, util.to_bit(state), config.track.column.key, track_data.trackEventName)
                             end
                         )
@@ -239,213 +247,216 @@ registerForEvent("onInit", function()
                 config.track.generate(false)
             end
         )
-    else
-        log("Native Settings UI is not installed.")
-        return
     end
 
-    if not Codeware then
-        log("Codeware is not installed.")
-        return
-    end
+    local function process_radio_ext(is_user_input)
+        local is_radio_ext_active, active_station_data, radio_ext = radio.is_radio_ext_active(radio.ext)
 
-    local radio_ext = GetMod("radioExt")
-
-    local system_requests_handler = Game.GetSystemRequestsHandler()
-    if system_requests_handler and not system_requests_handler:IsPreGame() then
-        local mounted_vehicle = Game.GetMountedVehicle(Game.GetPlayer())
-        if mounted_vehicle and mounted_vehicle:IsRadioReceiverActive() then
-            radio.current_track_evt = radio.get_current_track_evt()
-        end
-    end
-
-    function radio.set_default_station(vehicle_base_object)
-        local selected_station_idx = config.get(
-            config.common.table,
-            config.common.column.value,
-            config.common.column.key,
-            config.common.default_station.key
-        ) or config.common.default_station.default_value
-
-        if selected_station_idx == 1 then
-            return
-        elseif selected_station_idx == 2 then
-            vehicle_base_object:ToggleRadioReceiver(false)
-        else
-            vehicle_base_object:SetRadioReceiverStation(radio.station_order[selected_station_idx - 2])
-        end
-    end
-
-    local function set_onscreen_message(msg)
-        if config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.onscreen_message.key, true) then
-            local simple_screen_message     = SimpleScreenMessage.new()
-            simple_screen_message.isShown   = true
-            simple_screen_message.duration  = 5.0
-            simple_screen_message.message   = msg
-            simple_screen_message.isInstant = true
-            Game.GetBlackboardSystem()
-                    :Get(Game.GetAllBlackboardDefs().UI_Notifications)
-                    :SetVariant(Game.GetAllBlackboardDefs().UI_Notifications.OnscreenMessage, ToVariant(simple_screen_message), true)
-        end
-    end
-
-    local function display_radio_notice()
-        local loc_station_name, loc_track_name
-
-        if RadioExt and radio_ext then
-            local active_station_data = radio_ext.radioManager.managerV:getActiveStationData()
-            if active_station_data then
-                loc_station_name = active_station_data.station
-
-                local ext_radio = radio_ext.radioManager.managerV:getRadioByName(active_station_data.station)
-
-                loc_track_name = active_station_data.track:gsub(("%s\\"):format(ext_radio.path), ""):gsub("%..*", "")
-            end
+        if not is_radio_ext_active or not active_station_data or not radio_ext then
+            return false
         end
 
-        loc_station_name = loc_station_name or GetLocalizedTextByKey(radio.get_current_station_name())
-        loc_track_name   = loc_track_name or GetLocalizedTextByKey(radio.get_current_track_name())
+        if is_user_input then
+            local song_count = #radio_ext.songs
 
-        set_onscreen_message(("%s\n\n%s%s"):format(loc_station_name, util.set_space(8), loc_track_name))
-    end
-
-    function radio.skip(force)
-        if force and RadioExt and radio_ext then
-            local active_station_data = radio_ext.radioManager.managerV:getActiveStationData()
-            if active_station_data then
-                local ext_radio = radio_ext.radioManager.managerV:getRadioByName(active_station_data.station)
-
-                local ext_radio_songs = util.deepcopy(ext_radio.songs)
-
-                if #ext_radio_songs <= 1 then
-                    return false
-                end
-
-                ext_radio:currentSongDone()
-
-                for idx, song_data in ipairs(ext_radio_songs) do
-                    if song_data.path == radio.current_track_evt then
-                        table.remove(ext_radio_songs, idx)
-                    end
-                end
-
-                ext_radio.currentSong = ext_radio_songs[Game.RandRange(1, #ext_radio_songs + 1)]
-                ext_radio.tick = 0
-
-                ext_radio:startNewSong()
-
-                radio.current_track_evt = ext_radio.currentSong.path
-
-                display_radio_notice()
-
+            if song_count <= 1 then
                 return true
             end
-        end
 
-        local current_track_evt = radio.get_current_track_evt()
+            local current_track_index = -1
 
-        if not current_track_evt then
-            return false
-        end
+            for idx, song_data in ipairs(radio_ext.songs) do
+                if song_data.path == radio.current_track_hash_lo then
+                    current_track_index = idx
 
-        if not force and config.get(config.track.table, config.track.column.value, config.track.column.key, current_track_evt, true) then
-            if RadioExt and radio_ext then
-                local active_station_data = radio_ext.radioManager.managerV:getActiveStationData()
-                if active_station_data then
-                    local ext_radio = radio_ext.radioManager.managerV:getRadioByName(active_station_data.station)
-
-                    current_track_evt = ext_radio.currentSong.path
-
-                    return false
+                    break
                 end
             end
 
-            radio.current_track_evt = current_track_evt
+            radio_ext:currentSongDone()
 
-            return false
+            radio_ext.currentSong = radio_ext.songs[RandDifferent(current_track_index - 1, song_count) + 1]
+            radio_ext.tick = 0
+
+            radio_ext:startNewSong()
+
+            radio.set_current_track(radio_ext.currentSong.path)
+
+            local station_text = active_station_data.station
+            local track_text = radio.normalize_radio_ext_track_text(active_station_data.track, radio_ext.path)
+
+            radio.show_screen_notification(station_text, track_text)
+        else
+            radio.set_current_track(radio_ext.currentSong.path)
         end
 
-        local available_tracks   = {}
-        local unavailable_tracks = {}
+        return true
+    end
 
-        for primary_key, track_evt in radio.get_current_station_track_evts() do
-            if util.to_bool(Game.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs")) or not util.find_value_in_table(radio.quest_fact_tracks, primary_key) then
-                if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
-                    table.insert(available_tracks, track_evt)
+    function radio.skip(is_user_input)
+        if radio.is_radio_ext_found then
+            if process_radio_ext(is_user_input) then
+                return
+            end
+        end
+
+        local pre_track_name = radio.get_current_track_name()
+
+        if pre_track_name.hash_lo == 0 or pre_track_name.value == radio.none_track_name then
+            return
+        end
+
+        local current_station_name = radio.get_current_station_name()
+
+        local pre_track_evt = radio.get_track_evt_by_hash_lo(pre_track_name.hash_lo, current_station_name)
+
+        if not pre_track_evt then
+            return
+        end
+
+        local is_track_available = config.get(config.track.table, config.track.column.value, config.track.column.key, pre_track_evt, true)
+
+        if not is_user_input and is_track_available then
+            radio.set_current_track(pre_track_name.hash_lo)
+
+            return
+        end
+
+        local available_tracks           = {}
+        local unavailable_tracks         = {}
+
+        local is_enable_streamer_mode    = radio.is_enable_streamer_mode()
+        local is_in_metro                = radio.is_in_metro()
+        local is_enable_quest_fact       = Game.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs") == 1
+
+        local is_current_track_available = false
+        local current_track_evt
+
+        for track_data in radio.get_station_tracks(current_station_name) do
+            local is_streaming_friendly = true
+
+            -- I don't know if this is a bug or a feature, but it seems that copyrighted songs cannot be played in NCART.
+            if is_enable_streamer_mode or is_in_metro then
+                if track_data.isStreamingFriendly == 0 then
+                    is_streaming_friendly = false
+                end
+            end
+
+            local track_hash_lo = track_data.primaryKey
+            local track_evt = track_data.trackEventName
+
+            if is_streaming_friendly and (is_enable_quest_fact or not util.find_value_in_table(radio.quest_fact_tracks, track_hash_lo)) then
+                if track_hash_lo ~= radio.current_track_hash_lo then
+                    if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
+                        table.insert(available_tracks, {track_hash_lo, track_evt})
+                    else
+                        table.insert(unavailable_tracks, {track_hash_lo, track_evt})
+                    end
                 else
-                    table.insert(unavailable_tracks, track_evt)
+                    if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
+                        is_current_track_available = true
+                    end
+
+                    current_track_evt = track_evt
                 end
             end
         end
 
-        if not force and #available_tracks == 0 then
-            return false
+        local available_track_count = #available_tracks
+        local final_tracks = {}
+
+        if available_track_count >= 2 then
+            final_tracks = available_tracks
+        elseif available_track_count == 1 then
+            local is_same_track = available_tracks[1][1] == radio.current_track_hash_lo
+
+            if is_same_track then
+                if is_user_input then
+                    radio.set_current_track(pre_track_name.hash_lo)
+
+                    return
+                end
+
+                final_tracks = {{radio.current_track_hash_lo, current_track_evt}}
+            else
+                final_tracks = available_tracks
+            end
+        elseif available_track_count == 0 then
+            if (not is_user_input and not is_current_track_available) or (is_user_input and is_current_track_available) then
+                radio.set_current_track(pre_track_name.hash_lo)
+
+                return
+            end
+
+            if is_user_input and not is_current_track_available then
+                final_tracks = unavailable_tracks
+            elseif not is_user_input and is_current_track_available then
+                final_tracks = {{radio.current_track_hash_lo, current_track_evt}}
+            end
         end
 
-        local next_radio_track
-        local final_track_list = {}
-        if #available_tracks >= 2 then
-            for _, track_evt in ipairs(available_tracks) do
-                if track_evt ~= radio.current_track_evt then
-                    table.insert(final_track_list, track_evt)
-                end
-            end
-        elseif #available_tracks == 1 then
-            final_track_list = available_tracks
-        elseif #available_tracks == 0 then
-            for _, track_evt in ipairs(unavailable_tracks) do
-                if track_evt ~= radio.current_track_evt then
-                    table.insert(final_track_list, track_evt)
-                end
-            end
-        end
-
-        local range_max = #final_track_list + 1
+        local range_max = #final_tracks + 1
 
         if range_max <= 1 then
-            log("The thread tried to divide an integer value by an integer divisor of zero.")
-
-            return true
+            return
         end
 
-        local station_evt = radio.get_current_station_evt()
-        next_radio_track = final_track_list[Game.RandRange(1, range_max)]
+        local next_radio_track_data = final_tracks[RandRange(1, range_max)]
 
-        if not station_evt or not next_radio_track then
-            return false
+        if not next_radio_track_data then
+            return
         end
 
-        Game.GetAudioSystem():RequestSongOnRadioStation(station_evt, next_radio_track)
+        local current_station_evt = radio.get_station_evt_by_name(current_station_name)
 
-        if not next_radio_track == radio.get_current_track_evt() then
-            return false
+        if not current_station_evt then
+            return
         end
 
-        radio.current_track_evt = next_radio_track
+        Game.GetAudioSystem():RequestSongOnRadioStation(current_station_evt, next_radio_track_data[2])
 
-        return #available_tracks == 1 and false or true
+        radio.set_current_track(next_radio_track_data[1])
+
+        local post_track_name = radio.get_current_track_name()
+
+        if post_track_name.hash_lo ~= next_radio_track_data[1] then
+            radio.is_requested = true
+
+            return
+        end
     end
 
     config.key_input_event = NewProxy(
         {
             OnKeyInput = {
-                args = { "whandle:KeyInputEvent" },
+                args = {"whandle:KeyInputEvent"},
+                ---@param evt KeyInputEvent
                 callback = function(evt)
                     local key = evt:GetKey()
                     local action = evt:GetAction()
 
                     if config.controller_input then
                         if config.listening_keybind_widget and action == EInputAction.IACT_Release then
-                            config.listening_keybind_widget:OnKeyBindingEvent(inkKeyBindingEvent.new({ keyName = key.value }))
+                            config.listening_keybind_widget:OnKeyBindingEvent(inkKeyBindingEvent.new({keyName = key.value}))
                             config.listening_keybind_widget = nil
                         end
                     end
 
-                    if action == EInputAction.IACT_Press then
-                        if key.value == config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.input.key) then
-                            radio.skip(true)
-                        end
+                    if action ~= EInputAction.IACT_Press then
+                        return
                     end
+
+                    local input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.input.key)
+
+                    if key.value ~= input_key then
+                        return
+                    end
+
+                    if not radio.is_receiver_active() then
+                        return
+                    end
+
+                    radio.skip(true)
                 end
             }
         }
@@ -453,49 +464,104 @@ registerForEvent("onInit", function()
 
     Game.GetCallbackSystem():RegisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("OnKeyInput"), true)
 
-    ---@param self VehicleSummonWidgetGameController
+    ---@param evt VehicleRadioSongChanged
+    ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleRadioSongChanged", function(self, evt)
+        if not radio.check_pre_track(evt.radioSongName) and not radio.is_radio_ext_active(radio.ext) then
+            return
+        end
+
+        radio.skip(false)
+    end)
+
     ObserveBefore("VehicleSummonWidgetGameController", "TryShowVehicleRadioNotification", function(self)
-        if self.vehicle and self.vehicle:IsRadioReceiverActive() then
-            display_radio_notice()
-        elseif RadioExt and radio_ext and radio_ext.radioManager.managerV:getActiveStationData() then
-            display_radio_notice()
+        local is_radio_ext_active, active_station_data, radio_ext = radio.is_radio_ext_active(radio.ext)
+
+        if not is_radio_ext_active then
+            local is_show_popup = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.info_popup.key, true)
+
+            if is_show_popup and radio.is_pocket_receiver_active() then
+                self.rootWidget:SetVisible(true)
+                inkWidgetRef.SetVisible(self.subText, true)
+                inkWidgetRef.SetVisible(self.radioStationName, true)
+                local station = GetLocalizedTextByKey(radio.get_current_station_name())
+                local song = GetLocalizedTextByKey(radio.get_current_track_name())
+                inkTextRef.SetText(self.radioStationName, station)
+                inkTextRef.SetText(self.subText, song)
+                self:PlayAnimation("OnSongChanged", inkAnimOptions.new(), "OnTimeOut")
+            end
         end
-    end)
 
-    ---@param self VehicleSummonWidgetGameController
-    ---@param value Bool
-    ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleMount", function(self, value)
-        if value then
-            radio.skip()
+        local is_show_onscreen = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.onscreen_message.key, true)
+
+        if not is_show_onscreen then
+            return
         end
-    end)
 
-    ---@param self DriveEvents
-    ---@param timeDelta Float
-    ---@param stateContext StateContext
-    ---@param scriptInterface StateGameScriptInterface
-    ObserveBefore("DriveEvents", "OnUpdate", function(self, timeDelta, stateContext, scriptInterface)
-        radio.skip()
-    end)
+        if is_radio_ext_active then
+            if not active_station_data or not radio_ext then
+                return
+            end
 
-    ---@param self VehicleSummonWidgetGameController
-    ---@param value Uint32
-    ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleSummonStateChanged", function(self, value)
-        if value == EnumInt(vehicleSummonState.Arrived) then
-            radio.set_default_station(self.vehicle)
+            local station_text = active_station_data.station
+            local track_text = radio.normalize_radio_ext_track_text(active_station_data.track, radio_ext.path)
+
+            radio.show_screen_notification(station_text, track_text)
+
+            return
         end
+
+        radio.show_screen_notification()
     end)
 
-    ---@param self SettingsSelectorControllerKeyBinding
-    ObserveBefore("SettingsSelectorControllerKeyBinding", "ListenForInput", function(self)
+    ObserveBefore("PlayerPuppet", "OnGameAttached", function(self)
+        radio.set_current_track()
+    end)
+
+    ObserveBefore("PlayerPuppet", "OnDetach", function(self)
+        radio.set_current_track()
+    end)
+
+    ObserveBefore("inkSettingsSelectorControllerKeyBinding", "ListenForInput", function(self)
         config.listening_keybind_widget = self
     end)
 
-    ---@param self SettingsMainGameController
     ---@param idx Int32
     ObserveBefore("SettingsMainGameController", "PopulateCategorySettingsOptions", function(self, idx)
         if self.data[idx + 1].groupPath.value == config.path then
             config.controller_input = true
         end
     end)
+end)
+
+registerForEvent("onUpdate", function(delta)
+    if util.is_in_menu() then
+        return
+    end
+
+    local is_in_metro = radio.is_in_metro()
+
+    if radio.is_vehicle_receiver_active() and not is_in_metro then
+        if not radio.current_track_hash_lo then
+            radio.skip(false)
+            radio.is_requested = false
+        end
+
+        return
+    end
+
+    if GetPlayer().mountedVehicle and not is_in_metro then
+        return
+    end
+
+    local pre_track_name = radio.get_current_track_name()
+
+    if not radio.check_pre_track(pre_track_name) then
+        return
+    end
+
+    Game.GetUISystem():QueueEvent(vehicleRadioSongChanged.new({radioSongName = pre_track_name}))
+end)
+
+registerForEvent("onShutdown", function()
+    Game.GetCallbackSystem():UnregisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("OnKeyInput"))
 end)
