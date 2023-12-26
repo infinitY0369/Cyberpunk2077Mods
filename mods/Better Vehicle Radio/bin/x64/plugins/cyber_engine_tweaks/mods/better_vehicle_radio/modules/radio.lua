@@ -6,7 +6,9 @@ end
 
 local radio = {}
 
+radio.is_requested = false
 radio.none_track_name = "Gameplay-Devices-Radio-NoneTrack"
+radio.police_station_name = "Gameplay-Devices-Radio-PoliceStation"
 radio.quest_fact_tracks = {"52893", "52892"}
 
 ---@return nil
@@ -18,6 +20,11 @@ function radio.init()
 
     if not Game.GetSystemRequestsHandler():IsPreGame() and radio.is_receiver_active() then
         local current_track_name = radio.get_current_track_name()
+
+        if not radio.check_pre_track(current_track_name) then
+            return
+        end
+
         radio.set_current_track(current_track_name.hash_lo)
     end
 end
@@ -47,11 +54,13 @@ end
 
 ---@return boolean
 function radio.is_receiver_active()
-    return radio.is_vehicle_receiver_active() or radio.is_pocket_receiver_active()
+    return radio.is_vehicle_receiver_active(true, true) or radio.is_pocket_receiver_active()
 end
 
+---@param ignore_pocket_receiver? boolean
+---@param ignore_police_station? boolean
 ---@return boolean
-function radio.is_vehicle_receiver_active()
+function radio.is_vehicle_receiver_active(ignore_pocket_receiver, ignore_police_station)
     local player = GetPlayer()
 
     if not player then
@@ -64,7 +73,21 @@ function radio.is_vehicle_receiver_active()
         return false
     end
 
-    return player_vehicle:IsRadioReceiverActive()
+    if not player_vehicle:IsRadioReceiverActive() then
+        return false
+    end
+
+    if not ignore_pocket_receiver and not radio.is_pocket_receiver_active() then
+        return false
+    end
+
+    if ignore_police_station then
+        if player_vehicle:GetRadioReceiverStationName().value == radio.police_station_name then
+            return false
+        end
+    end
+
+    return true
 end
 
 ---@return boolean
@@ -226,17 +249,22 @@ function radio.get_track_evt_by_hash_lo(hash_lo, station_name)
 end
 
 ---@param pre_track_name CName
+---@param is_full_check? boolean
 ---@return boolean
-function radio.check_pre_track(pre_track_name)
+function radio.check_pre_track(pre_track_name, is_full_check)
+    if pre_track_name.hash_lo == 0 or pre_track_name.value == radio.none_track_name then
+        return false
+    end
+
+    if not is_full_check then
+        return true
+    end
+
     if pre_track_name.hash_lo == radio.current_track_hash_lo then
         if not radio.is_requested then
             return false
         end
     elseif radio.is_requested then
-        return false
-    end
-
-    if pre_track_name.hash_lo == 0 or pre_track_name.value == radio.none_track_name then
         return false
     end
 
@@ -246,12 +274,22 @@ end
 ---@param loc_station_text? String
 ---@param loc_track_text? String
 function radio.show_screen_notification(loc_station_text, loc_track_text)
+    local is_police_station = false
+
     if not loc_station_text then
-        loc_station_text = GetLocalizedTextByKey(radio.get_current_station_name())
+        local station_name = radio.get_current_station_name()
+        is_police_station = station_name.value == radio.police_station_name
+        loc_station_text = GetLocalizedTextByKey(station_name)
     end
 
     if not loc_track_text then
-        loc_track_text = GetLocalizedTextByKey(radio.get_current_track_name())
+        local track_name = radio.get_current_track_name()
+
+        if not is_police_station and not radio.check_pre_track(track_name) then
+            return
+        end
+
+        loc_track_text = GetLocalizedTextByKey(track_name)
     end
 
     util.show_screen_message(("%s\n\n%s%s"):format(loc_station_text, util.set_space(8), loc_track_text))
@@ -261,6 +299,10 @@ end
 ---@return boolean, table?, table?
 function radio.is_radio_ext_active(radio_ext)
     if not radio_ext or not radio.is_radio_ext_found then
+        return false
+    end
+
+    if not radio_ext.radioManager or not radio_ext.radioManager.managerV then
         return false
     end
 

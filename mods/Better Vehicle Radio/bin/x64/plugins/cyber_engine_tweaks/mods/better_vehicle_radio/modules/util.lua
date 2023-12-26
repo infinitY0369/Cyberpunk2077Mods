@@ -1,5 +1,7 @@
 local util = {}
 
+util.is_loading = false
+
 ---@param space_count integer
 ---@return string
 function util.set_space(space_count)
@@ -92,9 +94,28 @@ end
 
 ---@return boolean
 function util.is_in_menu()
-    local ui_system_def = GetAllBlackboardDefs().UI_System
+    local all_script_definitions = GetAllBlackboardDefs()
+    local blackboard_system = Game.GetBlackboardSystem()
 
-    return Game.GetBlackboardSystem():Get(ui_system_def):GetBool(ui_system_def.IsInMenu)
+    local ui_system_def = all_script_definitions.UI_System
+    local is_in_menu = blackboard_system:Get(ui_system_def):GetBool(ui_system_def.IsInMenu)
+
+    if is_in_menu then
+        return true
+    end
+
+    local photo_mode_def = all_script_definitions.PhotoMode
+    local is_active = blackboard_system:Get(photo_mode_def):GetBool(photo_mode_def.IsActive)
+
+    if is_active then
+        return true
+    end
+
+    if util.is_loading then
+        return true
+    end
+
+    return false
 end
 
 return util

@@ -280,15 +280,13 @@ registerForEvent("onInit", function()
 
             radio_ext:startNewSong()
 
-            radio.set_current_track(radio_ext.currentSong.path)
-
             local station_text = active_station_data.station
             local track_text = radio.normalize_radio_ext_track_text(active_station_data.track, radio_ext.path)
 
             radio.show_screen_notification(station_text, track_text)
-        else
-            radio.set_current_track(radio_ext.currentSong.path)
         end
+
+        radio.set_current_track(radio_ext.currentSong.path)
 
         return true
     end
@@ -452,7 +450,7 @@ registerForEvent("onInit", function()
                         return
                     end
 
-                    if not radio.is_receiver_active() then
+                    if not radio.is_receiver_active() or util.is_in_menu() then
                         return
                     end
 
@@ -466,7 +464,7 @@ registerForEvent("onInit", function()
 
     ---@param evt VehicleRadioSongChanged
     ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleRadioSongChanged", function(self, evt)
-        if not radio.check_pre_track(evt.radioSongName) and not radio.is_radio_ext_active(radio.ext) then
+        if not radio.check_pre_track(evt.radioSongName, true) and not radio.is_radio_ext_active(radio.ext) then
             return
         end
 
@@ -531,6 +529,29 @@ registerForEvent("onInit", function()
             config.controller_input = true
         end
     end)
+
+    ---@param progress Float
+    ObserveBefore("LoadingScreenProgressBarController", "SetProgress", function(self, progress)
+        if util.is_loading then
+            return
+        end
+
+        util.is_loading = true
+    end)
+
+    ---@param visible Bool
+    ObserveBefore("LoadingScreenProgressBarController", "SetProgressBarVisiblity", function(self, visible)
+        util.is_loading = visible
+    end)
+
+    ---@param value Bool
+    ObserveBefore("FastTravelSystem", "OnLoadingScreenFinished", function(self, value)
+        if not value then
+            return
+        end
+
+        util.is_loading = false
+    end)
 end)
 
 registerForEvent("onUpdate", function(delta)
@@ -538,9 +559,7 @@ registerForEvent("onUpdate", function(delta)
         return
     end
 
-    local is_in_metro = radio.is_in_metro()
-
-    if radio.is_vehicle_receiver_active() and not is_in_metro then
+    if radio.is_vehicle_receiver_active(false, true) or radio.is_radio_ext_active(radio.ext) then
         if not radio.current_track_hash_lo then
             radio.skip(false)
             radio.is_requested = false
@@ -549,13 +568,13 @@ registerForEvent("onUpdate", function(delta)
         return
     end
 
-    if GetPlayer().mountedVehicle and not is_in_metro then
+    if GetPlayer().mountedVehicle and not radio.is_in_metro() then
         return
     end
 
     local pre_track_name = radio.get_current_track_name()
 
-    if not radio.check_pre_track(pre_track_name) then
+    if not radio.check_pre_track(pre_track_name, true) then
         return
     end
 
