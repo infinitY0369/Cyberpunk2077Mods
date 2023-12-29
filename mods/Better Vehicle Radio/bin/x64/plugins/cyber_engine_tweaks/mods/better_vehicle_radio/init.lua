@@ -2,17 +2,6 @@ local _c, config = pcall(require, "modules\\config")
 local _r, radio  = pcall(require, "modules\\radio")
 local _u, util   = pcall(require, "modules\\util")
 
----@param ... any
----@return nil
-local function log(...)
-    local args = {...}
-    for i, v in ipairs(args) do
-        args[i] = tostring(v)
-    end
-
-    print(("[better_vehicle_radio] %s"):format((table.concat(args, " "))))
-end
-
 registerForEvent("onInit", function()
     if not _c or not _r or not _u then
         return
@@ -41,6 +30,33 @@ registerForEvent("onInit", function()
 
                 if radio.is_receiver_active() then
                     radio.skip(false)
+                elseif radio.current_track_hash_lo then
+                    local current_station_data = radio.get_station_data_by_hash_lo(radio.current_track_hash_lo)
+
+                    if not current_station_data then
+                        return
+                    end
+
+                    local is_current_track_available = false
+                    local available_track_count = 0
+
+                    for _, track_data in ipairs(current_station_data.tracks) do
+                        local track_evt = track_data.trackEventName
+
+                        if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
+                            available_track_count = available_track_count + 1
+
+                            if track_data.primaryKey == radio.current_track_hash_lo then
+                                is_current_track_available = true
+                            end
+                        end
+                    end
+
+                    if is_current_track_available or available_track_count == 0 then
+                        return
+                    end
+
+                    radio.set_current_track()
                 end
             end
         )
@@ -50,7 +66,8 @@ registerForEvent("onInit", function()
 
             table            = "COMMON",
             column           = {key = "key", value = "value"},
-            input            = {key = "input", default_value = GetPlayer():PlayerLastUsedKBM() and EInputKey.IK_C.value or EInputKey.IK_Pad_DigitLeft.value},
+            veh_input        = {key = "veh_input", default_value = EInputKey.IK_F1.value},
+            port_input       = {key = "port_input", default_value = EInputKey.IK_F1.value},
             info_popup       = {key = "info_popup", default_value = false},
             onscreen_message = {key = "onscreen_message", default_value = false}
         }
@@ -67,21 +84,21 @@ registerForEvent("onInit", function()
             config.insert(
                 config.common.table,
                 {config.common.column.key, config.common.value},
-                {config.common.input.key, config.common.input.default_value},
+                {config.common.veh_input.key, config.common.veh_input.default_value},
                 1
             )
-            local selected_key = config.get(
+            local selected_veh_input_key = config.get(
                 config.common.table,
                 config.common.column.value,
                 config.common.column.key,
-                config.common.input.key
+                config.common.veh_input.key
             )
             native_settings.addKeyBinding(                                                                                 -- Add a keybind
                 sub_path,                                                                                                  -- path
-                GetLocalizedText("LocKey#27571"),                                                                          -- label
+                ("%s (Vehicle)"):format(GetLocalizedText("LocKey#27571")),                                                 -- label
                 ("%s%s"):format(GetLocalizedText("UI-Settings-Bind"), GetLocalizedText("UI-Settings-ConfirmationNeeded")), -- desc
-                selected_key or config.common.input.default_value,                                                         -- currentKey
-                config.common.input.default_value,                                                                         -- defaultKey
+                selected_veh_input_key or config.common.veh_input.default_value,                                           -- currentKey
+                config.common.veh_input.default_value,                                                                     -- defaultKey
                 false,                                                                                                     -- isHold
                 function(key)                                                                                              -- callback
                     config.set(
@@ -89,7 +106,37 @@ registerForEvent("onInit", function()
                         config.common.column.value,
                         key,
                         config.common.column.key,
-                        config.common.input.key
+                        config.common.veh_input.key
+                    )
+                end
+            )
+
+            config.insert(
+                config.common.table,
+                {config.common.column.key, config.common.value},
+                {config.common.port_input.key, config.common.port_input.default_value},
+                1
+            )
+            local selected_port_input_key = config.get(
+                config.common.table,
+                config.common.column.value,
+                config.common.column.key,
+                config.common.port_input.key
+            )
+            native_settings.addKeyBinding(                                                                                 -- Add a keybind
+                sub_path,                                                                                                  -- path
+                ("%s (Radioport)"):format(GetLocalizedText("LocKey#27571")),                                               -- label
+                ("%s%s"):format(GetLocalizedText("UI-Settings-Bind"), GetLocalizedText("UI-Settings-ConfirmationNeeded")), -- desc
+                selected_port_input_key or config.common.port_input.default_value,                                         -- currentKey
+                config.common.port_input.default_value,                                                                    -- defaultKey
+                false,                                                                                                     -- isHold
+                function(key)                                                                                              -- callback
+                    config.set(
+                        config.common.table,
+                        config.common.column.value,
+                        key,
+                        config.common.column.key,
+                        config.common.port_input.key
                     )
                 end
             )
@@ -107,13 +154,13 @@ registerForEvent("onInit", function()
                 config.common.info_popup.key,
                 true
             )
-            native_settings.addSwitch(                                      -- Add a switch
-                sub_path,                                                   -- path
-                "Show notification on Radioport",                           -- label
-                "",                                                         -- desc
-                info_popup_state or config.common.info_popup.default_value, -- currentValue
-                config.common.info_popup.default_value,                     -- defaultValue
-                function(state)                                             -- callback
+            native_settings.addSwitch(                                                                       -- Add a switch
+                sub_path,                                                                                    -- path
+                "Display Notification on Radioport",                                                         -- label
+                "Displays default song change notification on the Radioport, similar to the vehicle radio.", -- desc
+                info_popup_state or config.common.info_popup.default_value,                                  -- currentValue
+                config.common.info_popup.default_value,                                                      -- defaultValue
+                function(state)                                                                              -- callback
                     config.set(
                         config.common.table,
                         config.common.column.value,
@@ -139,8 +186,8 @@ registerForEvent("onInit", function()
             )
             native_settings.addSwitch(                                                  -- Add a switch
                 sub_path,                                                               -- path
-                "Onscreen Message",                                                     -- label
-                "",                                                                     -- desc
+                "Display Alternate Notification",                                       -- label
+                "Display the song change notification on the left side of the screen.", -- desc
                 onscreen_message_state or config.common.onscreen_message.default_value, -- currentValue
                 config.common.onscreen_message.default_value,                           -- defaultValue
                 function(state)                                                         -- callback
@@ -333,7 +380,7 @@ registerForEvent("onInit", function()
         for track_data in radio.get_station_tracks(current_station_name) do
             local is_streaming_friendly = true
 
-            -- I don't know if this is a bug or a feature, but it seems that copyrighted songs cannot be played in NCART.
+            -- I don't know if this is a bug or a feature, but it seems that copyrighted songs cannot be played on the NCART.
             if is_enable_streamer_mode or is_in_metro then
                 if track_data.isStreamingFriendly == 0 then
                     is_streaming_friendly = false
@@ -375,12 +422,12 @@ registerForEvent("onInit", function()
                     return
                 end
 
-                final_tracks = {{radio.current_track_hash_lo, current_track_evt}}
+                table.insert(final_tracks, {radio.current_track_hash_lo, current_track_evt})
             else
                 final_tracks = available_tracks
             end
         elseif available_track_count == 0 then
-            if (not is_user_input and not is_current_track_available) or (is_user_input and is_current_track_available) then
+            if is_user_input == is_current_track_available then
                 radio.set_current_track(pre_track_name.hash_lo)
 
                 return
@@ -389,7 +436,7 @@ registerForEvent("onInit", function()
             if is_user_input and not is_current_track_available then
                 final_tracks = unavailable_tracks
             elseif not is_user_input and is_current_track_available then
-                final_tracks = {{radio.current_track_hash_lo, current_track_evt}}
+                table.insert(final_tracks, {radio.current_track_hash_lo, current_track_evt})
             end
         end
 
@@ -444,7 +491,13 @@ registerForEvent("onInit", function()
                         return
                     end
 
-                    local input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.input.key)
+                    local input_key
+
+                    if GetPlayer().mountedVehicle and not radio.is_in_metro() then
+                        input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.veh_input.key)
+                    else
+                        input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.port_input.key)
+                    end
 
                     if key.value ~= input_key then
                         return
@@ -477,7 +530,7 @@ registerForEvent("onInit", function()
         if not is_radio_ext_active then
             local is_show_popup = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.info_popup.key, true)
 
-            if is_show_popup and radio.is_pocket_receiver_active() then
+            if is_show_popup and radio.is_pocket_receiver_active() and not GetPlayer().mountedVehicle then
                 self.rootWidget:SetVisible(true)
                 inkWidgetRef.SetVisible(self.subText, true)
                 inkWidgetRef.SetVisible(self.radioStationName, true)
@@ -531,17 +584,21 @@ registerForEvent("onInit", function()
     end)
 
     ---@param progress Float
-    ObserveBefore("LoadingScreenProgressBarController", "SetProgress", function(self, progress)
-        if util.is_loading then
+    ObserveBefore("inkFastTravelLoadingScreenLogicController", "SetLoadProgress", function(self, progress)
+        if util.is_fast_travel_loading then
             return
         end
 
-        util.is_loading = true
+        util.is_fast_travel_loading = true
     end)
 
     ---@param visible Bool
-    ObserveBefore("LoadingScreenProgressBarController", "SetProgressBarVisiblity", function(self, visible)
-        util.is_loading = visible
+    ObserveBefore("inkFastTravelLoadingScreenLogicController", "SetSpinnerVisiblility", function(self, visible)
+        if not visible then
+            return
+        end
+
+        util.is_fast_travel_loading = true
     end)
 
     ---@param value Bool
@@ -550,7 +607,16 @@ registerForEvent("onInit", function()
             return
         end
 
-        util.is_loading = false
+        util.is_fast_travel_loading = false
+    end)
+
+    ---@param state Bool
+    ObserveBefore("RadioLogicController", "OnRadioStateChanged", function(self, state)
+        if not state or not radio.current_track_hash_lo then
+            return
+        end
+
+        radio.veh_radio_state_change = true
     end)
 end)
 
@@ -559,16 +625,22 @@ registerForEvent("onUpdate", function(delta)
         return
     end
 
-    if radio.is_vehicle_receiver_active(false, true) or radio.is_radio_ext_active(radio.ext) then
+    local is_in_metro = radio.is_in_metro()
+    local is_vehicle_receiver_active = radio.is_vehicle_receiver_active(true)
+
+    if (is_vehicle_receiver_active and not is_in_metro) or radio.is_radio_ext_active(radio.ext) then
         if not radio.current_track_hash_lo then
             radio.skip(false)
             radio.is_requested = false
+        elseif is_vehicle_receiver_active and radio.veh_radio_state_change then
+            radio.skip(false)
+            radio.veh_radio_state_change = false
         end
 
         return
     end
 
-    if GetPlayer().mountedVehicle and not radio.is_in_metro() then
+    if GetPlayer().mountedVehicle and not is_in_metro then
         return
     end
 

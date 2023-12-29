@@ -1,6 +1,6 @@
 local util = {}
 
-util.is_loading = false
+util.is_fast_travel_loading = false
 
 ---@param space_count integer
 ---@return string
@@ -54,16 +54,16 @@ function util.string_with_quotes(str)
     return ("\"%s\""):format(str)
 end
 
----@param column_values table
+---@param values table
 ---@return string
-function util.format_table_values(column_values)
-    for i, v in ipairs(column_values) do
+function util.format_table_values(values)
+    for i, v in ipairs(values) do
         if type(v) == "string" then
-            column_values[i] = util.string_with_quotes(v)
+            values[i] = util.string_with_quotes(v)
         end
     end
 
-    return table.concat(column_values, ", ")
+    return table.concat(values, ", ")
 end
 
 ---@param file_name string
@@ -111,7 +111,7 @@ function util.is_in_menu()
         return true
     end
 
-    if util.is_loading then
+    if util.is_fast_travel_loading then
         return true
     end
 

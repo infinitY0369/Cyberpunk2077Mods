@@ -54,13 +54,12 @@ end
 
 ---@return boolean
 function radio.is_receiver_active()
-    return radio.is_vehicle_receiver_active(true, true) or radio.is_pocket_receiver_active()
+    return radio.is_vehicle_receiver_active(true) or radio.is_pocket_receiver_active()
 end
 
----@param ignore_pocket_receiver? boolean
 ---@param ignore_police_station? boolean
 ---@return boolean
-function radio.is_vehicle_receiver_active(ignore_pocket_receiver, ignore_police_station)
+function radio.is_vehicle_receiver_active(ignore_police_station)
     local player = GetPlayer()
 
     if not player then
@@ -77,14 +76,8 @@ function radio.is_vehicle_receiver_active(ignore_pocket_receiver, ignore_police_
         return false
     end
 
-    if not ignore_pocket_receiver and not radio.is_pocket_receiver_active() then
+    if ignore_police_station and player_vehicle:GetRadioReceiverStationName().value == radio.police_station_name then
         return false
-    end
-
-    if ignore_police_station then
-        if player_vehicle:GetRadioReceiverStationName().value == radio.police_station_name then
-            return false
-        end
     end
 
     return true
@@ -123,12 +116,6 @@ function radio.get_stations_count()
 end
 
 ---@param index Int32
----@return Int32
-function radio.get_ui_index_by_staion_index(index)
-    return RadioStationDataProvider.GetRadioStationUIIndex(index)
-end
-
----@param index Int32
 ---@return number?
 function radio.get_station_index_by_ui_index(index)
     return tonumber(EnumInt(RadioStationDataProvider.GetRadioStationByUIIndex(index)))
@@ -157,7 +144,7 @@ function radio.get_station_evt_by_name(station_name)
 end
 
 ---@return nil|fun():string?
-function radio.get_station_name_values()
+function radio.get_station_names()
     local station_data = radio.metadata
 
     if not station_data then
@@ -196,6 +183,24 @@ function radio.get_station_tracks(station_name)
     end
 end
 
+---@param hash_lo number
+---@return table?
+function radio.get_station_data_by_hash_lo(hash_lo)
+    for station_name in radio.get_station_names() do
+        local station_data = find_station_data_by_name(station_name)
+
+        if not station_data then
+            return
+        end
+
+        for _, track_data in ipairs(station_data.tracks) do
+            if track_data.primaryKey == hash_lo then
+                return station_data
+            end
+        end
+    end
+end
+
 ---@return CName
 function radio.get_current_track_name()
     local player = GetPlayer()
@@ -208,40 +213,11 @@ function radio.get_current_track_name()
     return player:GetPocketRadio():GetTrackName()
 end
 
----@return string?
-function radio.get_current_track_evt()
-    local current_station_name = radio.get_current_station_name()
-
-    local current_track_name = radio.get_current_track_name()
-
-    if not current_track_name then
-        return
-    end
-
-    local current_station_data = find_station_data_by_name(current_station_name)
-
-    if not current_station_data then
-        return
-    end
-
-    for _, track_data in ipairs(current_station_data.tracks) do
-        if track_data.primaryKey == current_track_name.hash_lo then
-            return track_data.trackEventName
-        end
-    end
-end
-
 ---@param hash_lo number
 ---@param station_name CName|string
 ---@return string?
 function radio.get_track_evt_by_hash_lo(hash_lo, station_name)
-    local station_data = find_station_data_by_name(station_name)
-
-    if not station_data then
-        return
-    end
-
-    for _, track_data in ipairs(station_data.tracks) do
+    for track_data in radio.get_station_tracks(station_name) do
         if track_data.primaryKey == hash_lo then
             return track_data.trackEventName
         end
@@ -289,7 +265,7 @@ function radio.show_screen_notification(loc_station_text, loc_track_text)
             return
         end
 
-        loc_track_text = GetLocalizedTextByKey(track_name)
+        loc_track_text = not is_police_station and GetLocalizedTextByKey(track_name) or ""
     end
 
     util.show_screen_message(("%s\n\n%s%s"):format(loc_station_text, util.set_space(8), loc_track_text))
