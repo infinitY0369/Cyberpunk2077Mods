@@ -13,7 +13,7 @@ registerForEvent("onInit", function()
     local is_codeware_found = type(Codeware) == "userdata"
     radio.is_radio_ext_found = radio.ext and type(RadioExt) == "userdata"
 
-    if not is_codeware_found or not native_settings then
+    if not is_codeware_found then
         return
     end
 
@@ -62,13 +62,13 @@ registerForEvent("onInit", function()
         )
 
         config.common = {
-            path             = "/common",
+            path = "/common",
 
-            table            = "COMMON",
-            column           = {key = "key", value = "value"},
-            veh_input        = {key = "veh_input", default_value = EInputKey.IK_F1.value},
-            port_input       = {key = "port_input", default_value = EInputKey.IK_F1.value},
-            info_popup       = {key = "info_popup", default_value = false},
+            table = "COMMON",
+            column = {key = "key", value = "value"},
+            veh_input = {key = "veh_input", default_value = EInputKey.IK_F1.value},
+            port_input = {key = "port_input", default_value = EInputKey.IK_F1.value},
+            info_popup = {key = "info_popup", default_value = false},
             onscreen_message = {key = "onscreen_message", default_value = false}
         }
 
@@ -203,14 +203,14 @@ registerForEvent("onInit", function()
         end
 
         config.track = {
-            path                       = {},
+            path = {},
 
-            table                      = "TRACK",
-            column                     = {key = "sound_event", value = "value"},
+            table = "TRACK",
+            column = {key = "sound_event", value = "value"},
 
             station_filter_option_list = {GetLocalizedText("UI-Menus-WorldMap-Filter-All")},
-            filter_idx                 = 1,
-            current_station_state      = {}
+            filter_idx = 1,
+            current_station_state = {}
         }
 
         function config.track.generate(init)
@@ -367,12 +367,11 @@ registerForEvent("onInit", function()
             return
         end
 
-        local available_tracks           = {}
-        local unavailable_tracks         = {}
+        local available_tracks   = {}
+        local unavailable_tracks = {}
 
-        local is_enable_streamer_mode    = radio.is_enable_streamer_mode()
-        local is_in_metro                = radio.is_in_metro()
-        local is_enable_quest_fact       = Game.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs") == 1
+        local is_enable_streamer_mode = radio.is_enable_streamer_mode()
+        local is_enable_quest_fact    = Game.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs") == 1
 
         local is_current_track_available = false
         local current_track_evt
@@ -380,8 +379,7 @@ registerForEvent("onInit", function()
         for track_data in radio.get_station_tracks(current_station_name) do
             local is_streaming_friendly = true
 
-            -- I don't know if this is a bug or a feature, but it seems that copyrighted songs cannot be played on the NCART.
-            if is_enable_streamer_mode or is_in_metro then
+            if is_enable_streamer_mode then
                 if track_data.isStreamingFriendly == 0 then
                     is_streaming_friendly = false
                 end

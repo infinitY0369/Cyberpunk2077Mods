@@ -53,6 +53,14 @@ class Zip:
         self.__out_path = out_path
         self.__cwd = cwd or CURRENT_DIR
 
+        self.min_all(False)
+
+    def min_all(self, value: bool):
+        self.__delete_lua_comments = value
+        self.__minify_json = value
+
+        return self
+
     def delete_lua_comments(self):
         self.__delete_lua_comments = True
 
@@ -142,7 +150,20 @@ class Archive:
 
         out_dir.mkdir(parents=True, exist_ok=True)
         subprocess.run(
-            ["WolvenKit.CLI.exe", "extract", cls.CONTENT_DIR, cls.EP1_DIR, "--outpath", out_dir, "--pattern", raw_file_path], cwd=cwd, stdout=subprocess.DEVNULL
+            [
+                "WolvenKit.CLI.exe",
+                "extract",
+                cls.CONTENT_DIR,
+                cls.EP1_DIR,
+                "--gamepath",
+                cls.GAME_BASE_DIR,
+                "--outpath",
+                out_dir,
+                "--pattern",
+                raw_file_path,
+            ],
+            cwd=cwd,
+            stdout=subprocess.DEVNULL,
         )
 
         if not out_file_path.exists():
