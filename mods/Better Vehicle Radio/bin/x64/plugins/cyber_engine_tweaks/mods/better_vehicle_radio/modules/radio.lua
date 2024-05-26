@@ -9,7 +9,7 @@ local radio = {}
 radio.is_requested = false
 radio.none_track_name = "Gameplay-Devices-Radio-NoneTrack"
 radio.police_station_name = "Gameplay-Devices-Radio-PoliceStation"
-radio.quest_fact_tracks = { "52893", "52892" }
+radio.quest_fact_tracks = { 52893, 52892 }
 
 ---@return nil
 function radio.init()
