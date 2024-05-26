@@ -11,7 +11,7 @@ registerForEvent("onInit", function()
     radio.ext = GetMod("radioExt")
 
     local is_codeware_found = type(Codeware) == "userdata"
-    radio.is_radio_ext_found = radio.ext and type(RadioExt) == "userdata"
+    radio.is_radio_ext_found = radio.ext and type(RadioExt) == "userdata" ---@diagnostic disable-line: no-unknown, undefined-global
 
     if not is_codeware_found then
         return
@@ -40,8 +40,9 @@ registerForEvent("onInit", function()
                     local is_current_track_available = false
                     local available_track_count = 0
 
+                    ---@diagnostic disable-next-line: no-unknown
                     for _, track_data in ipairs(current_station_data.tracks) do
-                        local track_evt = track_data.trackEventName
+                        local track_evt = track_data.trackEventName ---@type string
 
                         if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
                             available_track_count = available_track_count + 1
@@ -65,15 +66,15 @@ registerForEvent("onInit", function()
             path = "/common",
 
             table = "COMMON",
-            column = {key = "key", value = "value"},
-            veh_input = {key = "veh_input", default_value = EInputKey.IK_F1.value},
-            port_input = {key = "port_input", default_value = EInputKey.IK_F1.value},
-            info_popup = {key = "info_popup", default_value = false},
-            onscreen_message = {key = "onscreen_message", default_value = false}
+            column = { key = "key", value = "value" },
+            veh_input = { key = "veh_input", default_value = EInputKey.IK_F1.value },
+            port_input = { key = "port_input", default_value = EInputKey.IK_F1.value },
+            info_popup = { key = "info_popup", default_value = false },
+            onscreen_message = { key = "onscreen_message", default_value = false }
         }
 
         function config.common.generate()
-            config.create(config.common.table, {config.common.column.key, config.common.column.value})
+            config.create(config.common.table, { config.common.column.key, config.common.column.value })
 
             local sub_path = ("%s%s"):format(config.path, config.common.path)
             native_settings.addSubcategory(                  -- Add a subcategory
@@ -83,8 +84,8 @@ registerForEvent("onInit", function()
 
             config.insert(
                 config.common.table,
-                {config.common.column.key, config.common.value},
-                {config.common.veh_input.key, config.common.veh_input.default_value},
+                { config.common.column.key, config.common.value },
+                { config.common.veh_input.key, config.common.veh_input.default_value },
                 1
             )
             local selected_veh_input_key = config.get(
@@ -113,8 +114,8 @@ registerForEvent("onInit", function()
 
             config.insert(
                 config.common.table,
-                {config.common.column.key, config.common.value},
-                {config.common.port_input.key, config.common.port_input.default_value},
+                { config.common.column.key, config.common.value },
+                { config.common.port_input.key, config.common.port_input.default_value },
                 1
             )
             local selected_port_input_key = config.get(
@@ -143,8 +144,8 @@ registerForEvent("onInit", function()
 
             config.insert(
                 config.common.table,
-                {config.common.column.key, config.common.value},
-                {config.common.info_popup.key, util.to_bit(config.common.info_popup.default_value)},
+                { config.common.column.key, config.common.value },
+                { config.common.info_popup.key, util.to_bit(config.common.info_popup.default_value) },
                 1
             )
             local info_popup_state = config.get(
@@ -173,8 +174,8 @@ registerForEvent("onInit", function()
 
             config.insert(
                 config.common.table,
-                {config.common.column.key, config.common.value},
-                {config.common.onscreen_message.key, util.to_bit(config.common.onscreen_message.default_value)},
+                { config.common.column.key, config.common.value },
+                { config.common.onscreen_message.key, util.to_bit(config.common.onscreen_message.default_value) },
                 1
             )
             local onscreen_message_state = config.get(
@@ -206,9 +207,9 @@ registerForEvent("onInit", function()
             path = {},
 
             table = "TRACK",
-            column = {key = "sound_event", value = "value"},
+            column = { key = "sound_event", value = "value" },
 
-            station_filter_option_list = {GetLocalizedText("UI-Menus-WorldMap-Filter-All")},
+            station_filter_option_list = { GetLocalizedText("UI-Menus-WorldMap-Filter-All") },
             filter_idx = 1,
             current_station_state = {}
         }
@@ -216,7 +217,7 @@ registerForEvent("onInit", function()
         function config.track.generate(init)
             for idx = 1, radio.get_stations_count() do
                 local station_index = radio.get_station_index_by_ui_index(idx - 1)
-                local metadata = radio.metadata[station_index + 1]
+                local metadata = radio.metadata[station_index + 1] ---@type table
 
                 local is_filter_all = config.track.filter_idx == 1
                 local is_filter_station = idx == config.track.filter_idx - 1
@@ -227,12 +228,12 @@ registerForEvent("onInit", function()
 
                 if init then
                     table.insert(config.track.station_filter_option_list, station_localized_text)
-                    config.create(config.track.table, {config.track.column.key, config.track.column.value})
+                    config.create(config.track.table, { config.track.column.key, config.track.column.value })
                 end
 
                 if is_filter_all or config.track.current_station_state[idx] then
                     native_settings.removeSubcategory(config.track.path.station)
-                    config.track.current_station_state[idx] = false
+                    config.track.current_station_state[idx] = false ---@type boolean
                 end
 
                 if is_filter_all or is_filter_station then
@@ -242,28 +243,29 @@ registerForEvent("onInit", function()
                             station_localized_text      -- label
                         )
 
-                        config.track.current_station_state[idx] = true
+                        config.track.current_station_state[idx] = true ---@type boolean
                     end
                 else
                     native_settings.removeSubcategory(config.track.path.station)
-                    config.track.current_station_state[idx] = false
+                    config.track.current_station_state[idx] = false ---@type boolean
                 end
 
+                ---@diagnostic disable-next-line: no-unknown
                 for _, track_data in ipairs(metadata.tracks) do
                     if is_filter_all or is_filter_station then
                         if init then
                             config.insert(config.track.table,
-                                          {config.track.column.key, config.track.column.value},
-                                          {track_data.trackEventName, 1},
+                                          { config.track.column.key, config.track.column.value },
+                                          { track_data.trackEventName, 1 },
                                           1)
                         end
 
                         local desc = track_data.isStreamingFriendly == 0 and "This song is copyrighted." or ""
 
-                        native_settings.addSwitch(                       -- Add a switch
-                            config.track.path.station,                   -- path
-                            GetLocalizedText(track_data.secondaryKey),   -- label
-                            desc,                                        -- desc
+                        native_settings.addSwitch(                     -- Add a switch
+                            config.track.path.station,                 -- path
+                            GetLocalizedText(track_data.secondaryKey), -- label
+                            desc,                                      -- desc
                             config.get(config.track.table, config.track.column.value, config.track.column.key,
                                        track_data.trackEventName, true), -- currentValue
                             true,                                        -- defaultValue
@@ -312,6 +314,7 @@ registerForEvent("onInit", function()
 
             local current_track_index = -1
 
+            ---@diagnostic disable-next-line: no-unknown
             for idx, song_data in ipairs(radio_ext.songs) do
                 if song_data.path == radio.current_track_hash_lo then
                     current_track_index = idx
@@ -322,12 +325,12 @@ registerForEvent("onInit", function()
 
             radio_ext:currentSongDone()
 
-            radio_ext.currentSong = radio_ext.songs[RandDifferent(current_track_index - 1, song_count) + 1]
+            radio_ext.currentSong = radio_ext.songs[RandDifferent(current_track_index - 1, song_count) + 1] ---@type table
             radio_ext.tick = 0
 
             radio_ext:startNewSong()
 
-            local station_text = active_station_data.station
+            local station_text = active_station_data.station ---@type string
             local track_text = radio.normalize_radio_ext_track_text(active_station_data.track, radio_ext.path)
 
             radio.show_screen_notification(station_text, track_text)
@@ -374,7 +377,7 @@ registerForEvent("onInit", function()
         local is_enable_quest_fact    = Game.GetQuestsSystem():GetFact("sq017_enable_kerry_usc_radio_songs") == 1
 
         local is_current_track_available = false
-        local current_track_evt
+        local current_track_evt ---@type string
 
         for track_data in radio.get_station_tracks(current_station_name) do
             local is_streaming_friendly = true
@@ -385,15 +388,15 @@ registerForEvent("onInit", function()
                 end
             end
 
-            local track_hash_lo = track_data.primaryKey
-            local track_evt = track_data.trackEventName
+            local track_hash_lo = track_data.primaryKey ---@type integer
+            local track_evt = track_data.trackEventName ---@type string
 
             if is_streaming_friendly and (is_enable_quest_fact or not util.find_value_in_table(radio.quest_fact_tracks, track_hash_lo)) then
                 if track_hash_lo ~= radio.current_track_hash_lo then
                     if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
-                        table.insert(available_tracks, {track_hash_lo, track_evt})
+                        table.insert(available_tracks, { track_hash_lo, track_evt })
                     else
-                        table.insert(unavailable_tracks, {track_hash_lo, track_evt})
+                        table.insert(unavailable_tracks, { track_hash_lo, track_evt })
                     end
                 else
                     if config.get(config.track.table, config.track.column.value, config.track.column.key, track_evt, true) then
@@ -420,7 +423,7 @@ registerForEvent("onInit", function()
                     return
                 end
 
-                table.insert(final_tracks, {radio.current_track_hash_lo, current_track_evt})
+                table.insert(final_tracks, { radio.current_track_hash_lo, current_track_evt })
             else
                 final_tracks = available_tracks
             end
@@ -434,7 +437,7 @@ registerForEvent("onInit", function()
             if is_user_input and not is_current_track_available then
                 final_tracks = unavailable_tracks
             elseif not is_user_input and is_current_track_available then
-                table.insert(final_tracks, {radio.current_track_hash_lo, current_track_evt})
+                table.insert(final_tracks, { radio.current_track_hash_lo, current_track_evt })
             end
         end
 
@@ -444,6 +447,7 @@ registerForEvent("onInit", function()
             return
         end
 
+        ---@type table
         local next_radio_track_data = final_tracks[RandRange(1, range_max)]
 
         if not next_radio_track_data then
@@ -472,7 +476,7 @@ registerForEvent("onInit", function()
     config.key_input_event = NewProxy(
         {
             OnKeyInput = {
-                args = {"whandle:KeyInputEvent"},
+                args = { "whandle:KeyInputEvent" },
                 ---@param evt KeyInputEvent
                 callback = function(evt)
                     local key = evt:GetKey()
@@ -480,7 +484,9 @@ registerForEvent("onInit", function()
 
                     if config.controller_input then
                         if config.listening_keybind_widget and action == EInputAction.IACT_Release then
-                            config.listening_keybind_widget:OnKeyBindingEvent(inkKeyBindingEvent.new({keyName = key.value}))
+                            ---@diagnostic disable-next-line: assign-type-mismatch
+                            config.listening_keybind_widget:OnKeyBindingEvent(inkKeyBindingEvent.new({ keyName = key.value }))
+                            ---@diagnostic disable-next-line: no-unknown
                             config.listening_keybind_widget = nil
                         end
                     end
@@ -489,7 +495,7 @@ registerForEvent("onInit", function()
                         return
                     end
 
-                    local input_key
+                    local input_key ---@type string
 
                     if GetPlayer().mountedVehicle and not radio.is_in_metro() then
                         input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.veh_input.key)
@@ -511,10 +517,11 @@ registerForEvent("onInit", function()
         }
     )
 
+    ---@diagnostic disable-next-line: param-type-mismatch
     Game.GetCallbackSystem():RegisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("OnKeyInput"), true)
 
     ---@param evt VehicleRadioSongChanged
-    ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleRadioSongChanged", function(self, evt)
+    ObserveBefore("VehicleSummonWidgetGameController", "OnVehicleRadioSongChanged", function(_, evt)
         if not radio.check_pre_track(evt.radioSongName, true) and not radio.is_radio_ext_active(radio.ext) then
             return
         end
@@ -551,7 +558,7 @@ registerForEvent("onInit", function()
                 return
             end
 
-            local station_text = active_station_data.station
+            local station_text = active_station_data.station ---@type string
             local track_text = radio.normalize_radio_ext_track_text(active_station_data.track, radio_ext.path)
 
             radio.show_screen_notification(station_text, track_text)
@@ -562,11 +569,11 @@ registerForEvent("onInit", function()
         radio.show_screen_notification()
     end)
 
-    ObserveBefore("PlayerPuppet", "OnGameAttached", function(self)
+    ObserveBefore("PlayerPuppet", "OnGameAttached", function(_)
         radio.set_current_track()
     end)
 
-    ObserveBefore("PlayerPuppet", "OnDetach", function(self)
+    ObserveBefore("PlayerPuppet", "OnDetach", function(_)
         radio.set_current_track()
     end)
 
@@ -581,8 +588,7 @@ registerForEvent("onInit", function()
         end
     end)
 
-    ---@param progress Float
-    ObserveBefore("inkFastTravelLoadingScreenLogicController", "SetLoadProgress", function(self, progress)
+    ObserveBefore("inkFastTravelLoadingScreenLogicController", "SetLoadProgress", function(_, _)
         if util.is_fast_travel_loading then
             return
         end
@@ -591,7 +597,7 @@ registerForEvent("onInit", function()
     end)
 
     ---@param visible Bool
-    ObserveBefore("inkFastTravelLoadingScreenLogicController", "SetSpinnerVisiblility", function(self, visible)
+    ObserveBefore("inkFastTravelLoadingScreenLogicController", "SetSpinnerVisiblility", function(_, visible)
         if not visible then
             return
         end
@@ -600,7 +606,7 @@ registerForEvent("onInit", function()
     end)
 
     ---@param value Bool
-    ObserveBefore("FastTravelSystem", "OnLoadingScreenFinished", function(self, value)
+    ObserveBefore("FastTravelSystem", "OnLoadingScreenFinished", function(_, value)
         if not value then
             return
         end
@@ -609,7 +615,7 @@ registerForEvent("onInit", function()
     end)
 
     ---@param state Bool
-    ObserveBefore("RadioLogicController", "OnRadioStateChanged", function(self, state)
+    ObserveBefore("RadioLogicController", "OnRadioStateChanged", function(_, state)
         if not state or not radio.current_track_hash_lo then
             return
         end
@@ -618,7 +624,7 @@ registerForEvent("onInit", function()
     end)
 end)
 
-registerForEvent("onUpdate", function(delta)
+registerForEvent("onUpdate", function(_)
     if util.is_in_menu() then
         return
     end
@@ -648,9 +654,10 @@ registerForEvent("onUpdate", function(delta)
         return
     end
 
-    Game.GetUISystem():QueueEvent(vehicleRadioSongChanged.new({radioSongName = pre_track_name}))
+    Game.GetUISystem():QueueEvent(vehicleRadioSongChanged.new({ radioSongName = pre_track_name }))
 end)
 
-registerForEvent("onShutdown", function()
-    Game.GetCallbackSystem():UnregisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("OnKeyInput"))
-end)
+-- registerForEvent("onShutdown", function()
+--     ---@diagnostic disable-next-line: param-type-mismatch
+--     Game.GetCallbackSystem():UnregisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("OnKeyInput"))
+-- end)

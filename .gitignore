@@ -1,5 +1,6 @@
 *.zip
 
+/.venv/
+/dump/
 .tmp/
 .vscode
-/dump/

@@ -9,14 +9,14 @@ local radio = {}
 radio.is_requested = false
 radio.none_track_name = "Gameplay-Devices-Radio-NoneTrack"
 radio.police_station_name = "Gameplay-Devices-Radio-PoliceStation"
-radio.quest_fact_tracks = {"52893", "52892"}
+radio.quest_fact_tracks = { "52893", "52892" }
 
 ---@return nil
 function radio.init()
     local metadata_path = "data\\metadata.json"
     local raw_json_metadata = util.get_file_data(metadata_path)
 
-    radio.metadata = json.decode(raw_json_metadata).radioStations
+    radio.metadata = json.decode(raw_json_metadata).radioStations ---@type table
 
     if not Game.GetSystemRequestsHandler():IsPreGame() and radio.is_receiver_active() then
         local current_track_name = radio.get_current_track_name()
@@ -45,6 +45,7 @@ local function find_station_data_by_name(station_name)
         station_name = station_name.value
     end
 
+    ---@diagnostic disable-next-line: no-unknown
     for _, station_data in ipairs(radio.metadata) do
         if station_data.secondaryKey == station_name then
             return station_data
@@ -107,6 +108,7 @@ end
 
 ---@return boolean
 function radio.is_enable_streamer_mode()
+    ---@diagnostic disable-next-line: undefined-field
     return Game.GetSettingsSystem():GetVar("/audio/misc", "StreamerMode"):GetValue()
 end
 
@@ -174,7 +176,7 @@ function radio.get_station_tracks(station_name)
     return function()
         idx = idx + 1
 
-        local tracks = station_data.tracks
+        local tracks = station_data.tracks ---@type table
         local track_count = #tracks
 
         if idx <= track_count then
@@ -193,6 +195,7 @@ function radio.get_station_data_by_hash_lo(hash_lo)
             return
         end
 
+        ---@diagnostic disable-next-line: no-unknown
         for _, track_data in ipairs(station_data.tracks) do
             if track_data.primaryKey == hash_lo then
                 return station_data
@@ -282,12 +285,14 @@ function radio.is_radio_ext_active(radio_ext)
         return false
     end
 
+    ---@type table
     local active_station_data = radio_ext.radioManager.managerV:getActiveStationData()
 
     if not active_station_data then
         return false
     end
 
+    ---@type table
     local ext_radio = radio_ext.radioManager.managerV:getRadioByName(active_station_data.station)
 
     if not ext_radio then

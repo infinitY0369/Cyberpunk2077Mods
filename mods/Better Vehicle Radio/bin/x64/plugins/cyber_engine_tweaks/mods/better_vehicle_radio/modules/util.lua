@@ -31,9 +31,10 @@ function util.to_bit(bool)
 end
 
 ---@param tbl table
----@param value string
+---@param value any
 ---@return boolean
 function util.find_value_in_table(tbl, value)
+    ---@diagnostic disable-next-line: no-unknown
     for _, v in pairs(tbl) do
         if v == value then
             return true
@@ -57,9 +58,10 @@ end
 ---@param values table
 ---@return string
 function util.format_table_values(values)
+    ---@diagnostic disable-next-line: no-unknown
     for i, v in ipairs(values) do
         if type(v) == "string" then
-            values[i] = util.string_with_quotes(v)
+            values[i] = util.string_with_quotes(v) ---@diagnostic disable-line: no-unknown
         end
     end
 
@@ -83,12 +85,14 @@ end
 
 ---@param message String
 function util.show_screen_message(message)
+    ---@diagnostic disable-next-line: missing-fields
     local simple_screen_message = SimpleScreenMessage.new({
         isShown = true,
         message = message
     })
 
-    local ui_notifications_def  = GetAllBlackboardDefs().UI_Notifications
+    local ui_notifications_def = GetAllBlackboardDefs().UI_Notifications
+    ---@diagnostic disable-next-line: param-type-mismatch
     Game.GetBlackboardSystem():Get(ui_notifications_def):SetVariant(ui_notifications_def.OnscreenMessage, ToVariant(simple_screen_message), true)
 end
 
