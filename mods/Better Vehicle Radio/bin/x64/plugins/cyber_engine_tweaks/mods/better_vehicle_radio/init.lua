@@ -476,7 +476,7 @@ registerForEvent("onInit", function()
     config.key_input_event = NewProxy(
         {
             OnKeyInput = {
-                args = { "whandle:KeyInputEvent" },
+                args = { "handle:KeyInputEvent" },
                 ---@param evt KeyInputEvent
                 callback = function(evt)
                     local key = evt:GetKey()
