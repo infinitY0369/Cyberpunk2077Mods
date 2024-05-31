@@ -496,8 +496,13 @@ registerForEvent("onInit", function()
                     end
 
                     local input_key ---@type string
+                    local player = GetPlayer()
 
-                    if GetPlayer().mountedVehicle and not radio.is_in_metro() then
+                    if not player then
+                        return
+                    end
+
+                    if player.mountedVehicle and not radio.is_in_metro() then
                         input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.veh_input.key)
                     else
                         input_key = config.get(config.common.table, config.common.column.value, config.common.column.key, config.common.port_input.key)
@@ -644,7 +649,9 @@ registerForEvent("onUpdate", function(_)
         return
     end
 
-    if GetPlayer().mountedVehicle and not is_in_metro then
+    local player = GetPlayer()
+
+    if player and player.mountedVehicle and not is_in_metro then
         return
     end
 
@@ -656,8 +663,3 @@ registerForEvent("onUpdate", function(_)
 
     Game.GetUISystem():QueueEvent(vehicleRadioSongChanged.new({ radioSongName = pre_track_name }))
 end)
-
--- registerForEvent("onShutdown", function()
---     ---@diagnostic disable-next-line: param-type-mismatch
---     Game.GetCallbackSystem():UnregisterCallback("Input/Key", config.key_input_event:Target(), config.key_input_event:Function("OnKeyInput"))
--- end)

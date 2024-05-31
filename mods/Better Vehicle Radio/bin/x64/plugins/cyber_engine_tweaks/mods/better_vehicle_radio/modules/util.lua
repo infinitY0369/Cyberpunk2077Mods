@@ -102,7 +102,13 @@ function util.is_in_menu()
     local blackboard_system = Game.GetBlackboardSystem()
 
     local ui_system_def = all_script_definitions.UI_System
-    local is_in_menu = blackboard_system:Get(ui_system_def):GetBool(ui_system_def.IsInMenu)
+    local ui_system = blackboard_system:Get(ui_system_def)
+
+    if not ui_system then
+        return true
+    end
+
+    local is_in_menu = ui_system:GetBool(ui_system_def.IsInMenu)
 
     if is_in_menu then
         return true

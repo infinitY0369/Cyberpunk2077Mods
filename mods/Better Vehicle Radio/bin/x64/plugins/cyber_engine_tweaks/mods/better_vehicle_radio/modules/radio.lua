@@ -207,6 +207,11 @@ end
 ---@return CName
 function radio.get_current_track_name()
     local player = GetPlayer()
+
+    if not player then
+        return CName(0)
+    end
+
     local mounted_vehicle = player:GetMountedVehicle()
 
     if mounted_vehicle then
